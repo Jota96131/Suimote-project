@@ -1,10 +1,11 @@
 name: Hello World
 
 on:
-  workflow_dispatch:
+  push:
 
 jobs:
-  say_hello:
-    runs-on: ubuntu-latest
-    steps:
+  sample:
+    name: Hello World Job
+    runs-on: ubuntu-latest # 実行環境
+    steps: # 実行する内容
       - run: echo "Hello World!"

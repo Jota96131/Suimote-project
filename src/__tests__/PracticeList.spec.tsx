@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import PracticeList from "../components/PracticeList";
-import { supabase } from "../../supabase";
+import { supabase } from "../supabase";
 
 const mockSupabase = supabase as jest.Mocked<typeof supabase>;
 

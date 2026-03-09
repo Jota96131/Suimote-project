@@ -1,1 +1,1 @@
-{"root":["./src/app.tsx","./src/main.tsx","./src/__tests__/appcomponent.spec.tsx","./src/types/index.ts"],"version":"5.9.3"}
+{"root":["./src/app.tsx","./src/main.tsx","./src/supabase.ts","./src/__mocks__/supabase.ts","./src/__tests__/appcomponent.spec.tsx","./src/__tests__/practicelist.spec.tsx","./src/components/practicelist.tsx","./src/types/index.ts"],"version":"5.9.3"}

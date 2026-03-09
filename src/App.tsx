@@ -1,7 +1,10 @@
+import PracticeList from "./components/PracticeList";
+
 function App() {
   return (
     <>
-      <h1>Hello World</h1>
+      <h1>Suimote</h1>
+      <PracticeList />
     </>
   );
 }

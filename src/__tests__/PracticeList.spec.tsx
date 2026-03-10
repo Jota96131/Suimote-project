@@ -12,6 +12,8 @@ const mockRecords = [
     time: "20:30",
     stroke: "クロール",
     facility: "市民プール",
+    memo: null,
+    created_at: "2024-01-15T10:00:00Z",
   },
   {
     id: "2",
@@ -20,6 +22,8 @@ const mockRecords = [
     time: "10:00",
     stroke: "平泳ぎ",
     facility: "スポーツセンター",
+    memo: "フォーム意識",
+    created_at: "2024-01-10T09:00:00Z",
   },
 ];
 

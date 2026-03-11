@@ -1,29 +1,7 @@
-import { useEffect, useState } from "react";
-import { supabase } from "../supabase";
-import type { PracticeRecord } from "../types";
+import { usePracticeRecords } from "../hooks/usePracticeRecords";
 
 export default function PracticeList() {
-  const [records, setRecords] = useState<PracticeRecord[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    async function fetchRecords() {
-      const { data, error } = await supabase
-        .from("practice_records")
-        .select("*")
-        .order("date", { ascending: false });
-
-      if (error) {
-        setError(error.message);
-      } else {
-        setRecords(data ?? []);
-      }
-      setLoading(false);
-    }
-
-    fetchRecords();
-  }, []);
+  const { records, loading, error } = usePracticeRecords();
 
   if (loading) return <p>読み込み中...</p>;
   if (error) return <p>エラー: {error}</p>;
@@ -49,7 +27,7 @@ export default function PracticeList() {
               <td>{record.distance}</td>
               <td>{record.time}</td>
               <td>{record.stroke}</td>
-              <td>{record.facility}</td>
+              <td>{record.facilities.name}</td>
             </tr>
           ))}
         </tbody>

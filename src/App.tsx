@@ -1,11 +1,15 @@
-import PracticeList from "./components/PracticeList";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import HomePage from "./pages/HomePage";
+import RecordsPage from "./pages/RecordsPage";
 
 function App() {
   return (
-    <>
-      <h1>Suimote</h1>
-      <PracticeList />
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/records" element={<RecordsPage />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

@@ -24,7 +24,7 @@ export default function PracticeRecordTable({ records }: Props) {
             <td>{record.distance}</td>
             <td>{formatTime(Number(record.time))}</td>
             <td>{record.stroke}</td>
-            <td>{record.facilities.name}</td>
+            <td>{record.facility}</td>
           </tr>
         ))}
       </tbody>

@@ -9,22 +9,9 @@ export function usePracticeRecords() {
 
   useEffect(() => {
     async function fetchRecords() {
-      // ログインユーザーを取得
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (!user) {
-        setError("ログインしてください。");
-        setLoading(false);
-        return;
-      }
-
-      // practice_records + facilities をJOINして取得
       const { data, error: queryError } = await supabase
         .from("practice_records")
-        .select("*, facilities(*)")
-        .eq("user_id", user.id)
+        .select("*")
         .order("date", { ascending: false });
 
       if (queryError) {

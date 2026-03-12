@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import type { PracticeRecordWithFacility } from "../types";
 import { formatTime } from "../utils/formatTime";
 
@@ -6,6 +7,8 @@ type Props = {
 };
 
 export default function PracticeRecordTable({ records }: Props) {
+  const navigate = useNavigate();
+
   return (
     <table>
       <thead>
@@ -19,7 +22,11 @@ export default function PracticeRecordTable({ records }: Props) {
       </thead>
       <tbody>
         {records.map((record) => (
-          <tr key={record.id}>
+          <tr
+            key={record.id}
+            onClick={() => navigate(`/records/${record.id}`)}
+            style={{ cursor: "pointer" }}
+          >
             <td>{record.date}</td>
             <td>{record.distance}</td>
             <td>{formatTime(Number(record.time))}</td>

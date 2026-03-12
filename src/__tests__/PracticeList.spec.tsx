@@ -1,4 +1,5 @@
 import { render, screen, waitFor } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import PracticeList from "../components/PracticeList";
 import { supabase } from "../supabase";
 
@@ -12,6 +13,7 @@ const mockRecords = [
     time: "1230",
     stroke: "クロール",
     facility: "市民プール",
+    memo: null,
     created_at: "2024-01-15T10:00:00Z",
   },
   {
@@ -21,9 +23,18 @@ const mockRecords = [
     time: "600",
     stroke: "平泳ぎ",
     facility: "スポーツセンター",
+    memo: "フォーム意識",
     created_at: "2024-01-10T09:00:00Z",
   },
 ];
+
+function renderWithRouter() {
+  return render(
+    <MemoryRouter>
+      <PracticeList />
+    </MemoryRouter>
+  );
+}
 
 beforeEach(() => {
   jest.clearAllMocks();
@@ -38,7 +49,7 @@ describe("PracticeList", () => {
       }),
     } as any);
 
-    render(<PracticeList />);
+    renderWithRouter();
 
     // スケルトン表示中もテーブルヘッダーは表示されている
     expect(screen.getByText("日付")).toBeInTheDocument();
@@ -59,7 +70,7 @@ describe("PracticeList", () => {
       }),
     } as any);
 
-    render(<PracticeList />);
+    renderWithRouter();
     await waitFor(() => {
       expect(screen.getByText("練習記録がありません")).toBeInTheDocument();
     });
@@ -79,7 +90,7 @@ describe("PracticeList", () => {
       }),
     } as any);
 
-    render(<PracticeList />);
+    renderWithRouter();
     await waitFor(() => {
       expect(screen.getByText("エラーが発生しました")).toBeInTheDocument();
       expect(screen.getByText("DB接続エラー")).toBeInTheDocument();
@@ -94,7 +105,7 @@ describe("PracticeList", () => {
       }),
     } as any);
 
-    render(<PracticeList />);
+    renderWithRouter();
 
     await waitFor(() => {
       expect(screen.getByText("練習記録一覧")).toBeInTheDocument();
@@ -126,7 +137,7 @@ describe("PracticeList", () => {
     const mockSelect = jest.fn().mockReturnValue({ order: mockOrder });
     mockSupabase.from.mockReturnValue({ select: mockSelect } as any);
 
-    render(<PracticeList />);
+    renderWithRouter();
 
     await waitFor(() => {
       expect(mockSupabase.from).toHaveBeenCalledWith("practice_records");

@@ -6,9 +6,10 @@ export type PracticeRecord = {
   id: string;
   date: string;           // YYYY-MM-DD
   distance: number;       // 距離 (m)
-  time: string;           // タイム (MM:SS)
+  time: string;           // タイム (秒数)
   stroke: Stroke;         // 泳法
   facility: string;       // 施設名（テキスト）
+  memo: string | null;    // メモ（任意）
   created_at: string;     // Supabase 自動生成 (ISO 8601)
 };
 

@@ -9,20 +9,18 @@ const mockRecords = [
     id: "1",
     date: "2024-01-15",
     distance: 1000,
-    time: "20:30",
+    time: "1230",
     stroke: "クロール",
     facility: "市民プール",
-    memo: null,
     created_at: "2024-01-15T10:00:00Z",
   },
   {
     id: "2",
     date: "2024-01-10",
     distance: 500,
-    time: "10:00",
+    time: "600",
     stroke: "平泳ぎ",
     facility: "スポーツセンター",
-    memo: "フォーム意識",
     created_at: "2024-01-10T09:00:00Z",
   },
 ];
@@ -32,8 +30,8 @@ beforeEach(() => {
 });
 
 describe("PracticeList", () => {
-  // ユニットテスト: ローディング表示
-  it("読み込み中に「読み込み中...」を表示する", () => {
+  // ユニットテスト: ローディング表示（スケルトン）
+  it("読み込み中にスケルトンテーブルを表示する", () => {
     mockSupabase.from.mockReturnValue({
       select: jest.fn().mockReturnValue({
         order: jest.fn(() => new Promise(() => {})), // 永遠にpending
@@ -41,11 +39,20 @@ describe("PracticeList", () => {
     } as any);
 
     render(<PracticeList />);
-    expect(screen.getByText("読み込み中...")).toBeInTheDocument();
+
+    // スケルトン表示中もテーブルヘッダーは表示されている
+    expect(screen.getByText("日付")).toBeInTheDocument();
+    expect(screen.getByText("距離 (m)")).toBeInTheDocument();
+    expect(screen.getByText("タイム")).toBeInTheDocument();
+    expect(screen.getByText("泳法")).toBeInTheDocument();
+    expect(screen.getByText("プール施設")).toBeInTheDocument();
+
+    // データ行は表示されていない
+    expect(screen.queryByText("練習記録一覧")).not.toBeInTheDocument();
   });
 
   // ユニットテスト: 練習記録なし
-  it("記録が空の場合「練習記録がありません。」を表示する", async () => {
+  it("記録が空の場合「練習記録がありません」を表示する", async () => {
     mockSupabase.from.mockReturnValue({
       select: jest.fn().mockReturnValue({
         order: jest.fn().mockResolvedValue({ data: [], error: null }),
@@ -54,8 +61,11 @@ describe("PracticeList", () => {
 
     render(<PracticeList />);
     await waitFor(() => {
-      expect(screen.getByText("練習記録がありません。")).toBeInTheDocument();
+      expect(screen.getByText("練習記録がありません")).toBeInTheDocument();
     });
+    expect(
+      screen.getByText("記録を追加すると、ここに表示されます。")
+    ).toBeInTheDocument();
   });
 
   // ユニットテスト: エラー表示
@@ -71,7 +81,8 @@ describe("PracticeList", () => {
 
     render(<PracticeList />);
     await waitFor(() => {
-      expect(screen.getByText("エラー: DB接続エラー")).toBeInTheDocument();
+      expect(screen.getByText("エラーが発生しました")).toBeInTheDocument();
+      expect(screen.getByText("DB接続エラー")).toBeInTheDocument();
     });
   });
 
@@ -99,14 +110,12 @@ describe("PracticeList", () => {
     // 1件目のデータ確認
     expect(screen.getByText("2024-01-15")).toBeInTheDocument();
     expect(screen.getByText("1000")).toBeInTheDocument();
-    expect(screen.getByText("20:30")).toBeInTheDocument();
     expect(screen.getByText("クロール")).toBeInTheDocument();
     expect(screen.getByText("市民プール")).toBeInTheDocument();
 
     // 2件目のデータ確認
     expect(screen.getByText("2024-01-10")).toBeInTheDocument();
     expect(screen.getByText("500")).toBeInTheDocument();
-    expect(screen.getByText("10:00")).toBeInTheDocument();
     expect(screen.getByText("平泳ぎ")).toBeInTheDocument();
     expect(screen.getByText("スポーツセンター")).toBeInTheDocument();
   });

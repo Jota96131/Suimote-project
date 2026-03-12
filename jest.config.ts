@@ -7,6 +7,7 @@ export default {
     }],
   },
   moduleNameMapper: {
+    "^@/(.*)$": "<rootDir>/src/$1",
     "^../../supabase$": "<rootDir>/src/__mocks__/supabase.ts",
     "^../supabase$": "<rootDir>/src/__mocks__/supabase.ts",
   },

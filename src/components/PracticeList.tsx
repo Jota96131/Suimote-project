@@ -1,37 +1,33 @@
 import { usePracticeRecords } from "../hooks/usePracticeRecords";
+import PracticeRecordTable from "./PracticeRecordTable";
+import PracticeTableSkeleton from "./PracticeTableSkeleton";
 
 export default function PracticeList() {
   const { records, loading, error } = usePracticeRecords();
 
-  if (loading) return <p>読み込み中...</p>;
-  if (error) return <p>エラー: {error}</p>;
-  if (records.length === 0) return <p>練習記録がありません。</p>;
+  if (loading) return <PracticeTableSkeleton />;
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center py-16 text-center">
+        <p className="text-lg font-medium text-destructive">エラーが発生しました</p>
+        <p className="mt-1 text-sm text-muted-foreground">{error}</p>
+      </div>
+    );
+  }
+
+  if (records.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-16 text-center text-muted-foreground">
+        <p className="text-lg font-medium">練習記録がありません</p>
+        <p className="mt-1 text-sm">記録を追加すると、ここに表示されます。</p>
+      </div>
+    );
+  }
 
   return (
     <div>
       <h2>練習記録一覧</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>日付</th>
-            <th>距離 (m)</th>
-            <th>タイム</th>
-            <th>泳法</th>
-            <th>プール施設</th>
-          </tr>
-        </thead>
-        <tbody>
-          {records.map((record) => (
-            <tr key={record.id}>
-              <td>{record.date}</td>
-              <td>{record.distance}</td>
-              <td>{record.time}</td>
-              <td>{record.stroke}</td>
-              <td>{record.facilities.name}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <PracticeRecordTable records={records} />
     </div>
   );
 }

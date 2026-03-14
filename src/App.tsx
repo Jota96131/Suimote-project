@@ -3,15 +3,18 @@ import HomePage from "./pages/HomePage";
 import RecordsPage from "./pages/RecordsPage";
 import RecordDetailPage from "./pages/RecordDetailPage";
 import AddRecordPage from "./pages/AddRecordPage";
+import AuthPage from "./pages/AuthPage";
+import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/records" element={<RecordsPage />} />
-        <Route path="/records/:id" element={<RecordDetailPage />} />
-        <Route path="/records/new" element={<AddRecordPage />} />
+        <Route path="/auth" element={<AuthPage />} />
+        <Route path="/records" element={<PrivateRoute><RecordsPage /></PrivateRoute>} />
+        <Route path="/records/new" element={<PrivateRoute><AddRecordPage /></PrivateRoute>} />
+        <Route path="/records/:id" element={<PrivateRoute><RecordDetailPage /></PrivateRoute>} />
       </Routes>
     </BrowserRouter>
   );

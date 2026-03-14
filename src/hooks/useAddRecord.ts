@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { supabase } from "../supabase";
 import type { Stroke } from "../types";
+import { useAuth } from "./useAuth";
 
 export type AddRecordForm = {
   date: string;
@@ -21,6 +22,7 @@ const initialForm: AddRecordForm = {
 };
 
 export function useAddRecord() {
+  const { user } = useAuth();
   const [form, setForm] = useState<AddRecordForm>(initialForm);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -43,6 +45,7 @@ export function useAddRecord() {
       stroke: form.stroke,
       facility: form.facility,
       memo: form.memo || null,
+      user_id: user?.id ?? null,
     });
 
     if (insertError) {

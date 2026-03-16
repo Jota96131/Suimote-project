@@ -3,6 +3,7 @@ import HomePage from "./pages/HomePage";
 import RecordsPage from "./pages/RecordsPage";
 import RecordDetailPage from "./pages/RecordDetailPage";
 import AddRecordPage from "./pages/AddRecordPage";
+import ProfilePage from "./pages/ProfilePage";
 import AuthPage from "./pages/AuthPage";
 import PrivateRoute from "./components/PrivateRoute";
 
@@ -15,6 +16,7 @@ function App() {
         <Route path="/records" element={<PrivateRoute><RecordsPage /></PrivateRoute>} />
         <Route path="/records/new" element={<PrivateRoute><AddRecordPage /></PrivateRoute>} />
         <Route path="/records/:id" element={<PrivateRoute><RecordDetailPage /></PrivateRoute>} />
+        <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
       </Routes>
     </BrowserRouter>
   );

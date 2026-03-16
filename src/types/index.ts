@@ -14,3 +14,28 @@ export type PracticeRecord = {
 };
 
 export type PracticeRecordWithFacility = PracticeRecord;
+
+/** areas マスタテーブルに対応する型 */
+export type Area = {
+  id: string;
+  name: string;         // エリア名（例: "渋谷・新宿"）
+};
+
+/** profiles テーブルに対応する型 */
+export type Profile = {
+  id: string;
+  user_id: string;
+  nickname: string;
+  avatar_url: string | null;
+  bio: string | null;
+  home_pool: string | null;
+  area_id: string | null;
+  created_at: string;
+  areas?: Area | null;  // join時に含まれるエリア情報
+};
+
+/** 累計記録の型 */
+export type MyStats = {
+  total_distance: number;  // 累計距離 (m)
+  total_count: number;     // 累計回数
+};

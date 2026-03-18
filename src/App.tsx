@@ -4,6 +4,7 @@ import RecordsPage from "./pages/RecordsPage";
 import RecordDetailPage from "./pages/RecordDetailPage";
 import AddRecordPage from "./pages/AddRecordPage";
 import ProfilePage from "./pages/ProfilePage";
+import ProfileEditPage from "./pages/ProfileEditPage";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/records/new" element={<AddRecordPage />} />
         <Route path="/records/:id" element={<RecordDetailPage />} />
         <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/profile/edit" element={<ProfileEditPage />} />
       </Routes>
     </BrowserRouter>
   );

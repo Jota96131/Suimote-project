@@ -12,8 +12,10 @@ export type AddRecordForm = {
   memo: string;
 };
 
+const today = () => new Date().toISOString().split("T")[0];
+
 const initialForm: AddRecordForm = {
-  date: "",
+  date: today(),
   distance: "",
   time: "",
   stroke: "クロール",

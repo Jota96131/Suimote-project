@@ -17,7 +17,7 @@ describe("useAddRecord", () => {
   it("初期状態でフォームが空でloading=false, error=nullを返す", () => {
     const { result } = renderHook(() => useAddRecord());
 
-    expect(result.current.form.date).toBe("");
+    expect(result.current.form.date).toBe(new Date().toISOString().split("T")[0]);
     expect(result.current.form.distance).toBe("");
     expect(result.current.form.time).toBe("");
     expect(result.current.form.stroke).toBe("クロール");
@@ -74,7 +74,7 @@ describe("useAddRecord", () => {
     });
 
     expect(onSuccess).toHaveBeenCalledTimes(1);
-    expect(result.current.form.date).toBe("");
+    expect(result.current.form.date).toBe(new Date().toISOString().split("T")[0]);
     expect(result.current.loading).toBe(false);
     expect(result.current.error).toBeNull();
   });

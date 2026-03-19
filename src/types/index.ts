@@ -13,7 +13,6 @@ export type PracticeRecord = {
   created_at: string;     // Supabase 自動生成 (ISO 8601)
 };
 
-export type PracticeRecordWithFacility = PracticeRecord;
 
 /** areas マスタテーブルに対応する型 */
 export type Area = {

@@ -67,6 +67,7 @@ describe("AddRecordPage", () => {
 
     renderAddPage();
 
+    await userEvent.clear(screen.getByLabelText("日付"));
     await userEvent.type(screen.getByLabelText("日付"), "2024-03-01");
     await userEvent.type(screen.getByLabelText("距離 (m)"), "1000");
     await userEvent.type(screen.getByLabelText("タイム (秒)"), "3600");
@@ -89,6 +90,7 @@ describe("AddRecordPage", () => {
 
     renderAddPage();
 
+    await userEvent.clear(screen.getByLabelText("日付"));
     await userEvent.type(screen.getByLabelText("日付"), "2024-03-01");
     await userEvent.type(screen.getByLabelText("距離 (m)"), "1000");
     await userEvent.type(screen.getByLabelText("タイム (秒)"), "3600");
@@ -109,6 +111,7 @@ describe("AddRecordPage", () => {
 
     renderAddPage();
 
+    await userEvent.clear(screen.getByLabelText("日付"));
     await userEvent.type(screen.getByLabelText("日付"), "2024-03-01");
     await userEvent.type(screen.getByLabelText("距離 (m)"), "1000");
     await userEvent.type(screen.getByLabelText("タイム (秒)"), "3600");

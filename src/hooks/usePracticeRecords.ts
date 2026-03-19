@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "../supabase";
-import type { PracticeRecordWithFacility } from "../types";
+import type { PracticeRecord } from "../types";
 
 export function usePracticeRecords() {
-  const [records, setRecords] = useState<PracticeRecordWithFacility[]>([]);
+  const [records, setRecords] = useState<PracticeRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -17,7 +17,7 @@ export function usePracticeRecords() {
     if (queryError) {
       setError(queryError.message);
     } else {
-      setRecords((data as PracticeRecordWithFacility[]) ?? []);
+      setRecords((data as PracticeRecord[]) ?? []);
     }
     setLoading(false);
   }, []);

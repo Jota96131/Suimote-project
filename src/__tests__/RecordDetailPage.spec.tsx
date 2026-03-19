@@ -104,7 +104,7 @@ describe("RecordDetailPage", () => {
 
     expect(screen.getByText("2024-01-15")).toBeInTheDocument();
     expect(screen.getByText("1000 m")).toBeInTheDocument();
-    expect(screen.getByText("20:30")).toBeInTheDocument(); // 1230秒 → 20:30
+    expect(screen.getByText("20:30.00")).toBeInTheDocument(); // 1230秒 → 20:30.00
     expect(screen.getByText("クロール")).toBeInTheDocument();
     expect(screen.getByText("市民プール")).toBeInTheDocument();
     expect(screen.getByText("調子良かった")).toBeInTheDocument();

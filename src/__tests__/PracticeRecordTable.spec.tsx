@@ -2,9 +2,9 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import PracticeRecordTable from "../components/PracticeRecordTable";
-import type { PracticeRecordWithFacility } from "../types";
+import type { PracticeRecord } from "../types";
 
-const mockRecords: PracticeRecordWithFacility[] = [
+const mockRecords: PracticeRecord[] = [
   {
     id: "1",
     date: "2024-01-15",
@@ -27,7 +27,7 @@ const mockRecords: PracticeRecordWithFacility[] = [
   },
 ];
 
-function renderWithRouter(records: PracticeRecordWithFacility[]) {
+function renderWithRouter(records: PracticeRecord[]) {
   return render(
     <MemoryRouter>
       <PracticeRecordTable records={records} />
@@ -85,10 +85,10 @@ describe("PracticeRecordTable", () => {
   it("タイムをmm:ss形式に変換して表示する", () => {
     renderWithRouter(mockRecords);
 
-    // 1230秒 → 20:30
-    expect(screen.getByText("20:30")).toBeInTheDocument();
-    // 600秒 → 10:00
-    expect(screen.getByText("10:00")).toBeInTheDocument();
+    // 1230秒 → 20:30.00
+    expect(screen.getByText("20:30.00")).toBeInTheDocument();
+    // 600秒 → 10:00.00
+    expect(screen.getByText("10:00.00")).toBeInTheDocument();
   });
 
   // ユニットテスト: 泳法の表示
@@ -115,7 +115,7 @@ describe("PracticeRecordTable", () => {
     ["バタフライ"],
     ["個人メドレー"],
   ] as const)("泳法「%s」を正しく表示する", (stroke) => {
-    const record: PracticeRecordWithFacility = {
+    const record: PracticeRecord = {
       id: "test",
       date: "2024-01-01",
       distance: 100,
@@ -135,9 +135,9 @@ describe("PracticeRecordTable", () => {
     renderWithRouter(mockRecords);
 
     const rows = screen.getAllByRole("row");
-    // データ行（インデックス1以降）のスタイルを確認
-    expect(rows[1]).toHaveStyle({ cursor: "pointer" });
-    expect(rows[2]).toHaveStyle({ cursor: "pointer" });
+    // データ行（インデックス1以降）のクラスを確認
+    expect(rows[1]).toHaveClass("cursor-pointer");
+    expect(rows[2]).toHaveClass("cursor-pointer");
   });
 
   // 結合テスト: 行クリックで詳細ページへ遷移
@@ -154,8 +154,7 @@ describe("PracticeRecordTable", () => {
 
     const rows = screen.getAllByRole("row");
     await user.click(rows[1]); // 1件目のデータ行
-    // MemoryRouterの中でuseNavigateが動作するため、遷移先URLを確認する代わりに
-    // 行がクリック可能であることを確認（cursor: pointer）
-    expect(rows[1]).toHaveStyle({ cursor: "pointer" });
+    // 行がクリック可能であることを確認（Tailwindクラス）
+    expect(rows[1]).toHaveClass("cursor-pointer");
   });
 });

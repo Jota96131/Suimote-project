@@ -121,7 +121,7 @@ export default function AddRecordPage() {
         <button
           type="submit"
           disabled={loading}
-          className="rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
+          className="rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white disabled:cursor-not-allowed disabled:bg-gray-400"
         >
           {loading ? "保存中..." : "保存する"}
         </button>

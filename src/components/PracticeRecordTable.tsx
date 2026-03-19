@@ -1,9 +1,9 @@
 import { useNavigate } from "react-router-dom";
-import type { PracticeRecordWithFacility } from "../types";
+import type { PracticeRecord } from "../types";
 import { formatTime } from "../utils/formatTime";
 
 type Props = {
-  records: PracticeRecordWithFacility[];
+  records: PracticeRecord[];
 };
 
 export default function PracticeRecordTable({ records }: Props) {
@@ -25,7 +25,7 @@ export default function PracticeRecordTable({ records }: Props) {
           <tr
             key={record.id}
             onClick={() => navigate(`/records/${record.id}`)}
-            style={{ cursor: "pointer" }}
+            className="cursor-pointer transition-colors hover:bg-gray-100"
           >
             <td>{record.date}</td>
             <td>{record.distance}</td>

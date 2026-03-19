@@ -10,13 +10,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Setup Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
           node-version: "20"
+          cache: "npm"
       - name: Install dependencies
-        run: npm install
+        run: npm ci
       - name: Run lint
         run: npx eslint src/
 
@@ -25,59 +26,38 @@ jobs:
     needs: lint
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Setup Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
           node-version: "20"
+          cache: "npm"
       - name: Install dependencies
-        run: npm install
+        run: npm ci
       - name: Run tests
         run: npm test
 
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     needs: test
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Setup Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
           node-version: "20"
+          cache: "npm"
       - name: Install dependencies
-        run: npm install
-      - name: Run build
+        run: npm ci
+      - name: Build
         run: npm run build
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
-      - name: Archive Production Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist
-          path: dist
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: "20"
-      - name: Install dependencies
-        run: npm install
-      - name: Download Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: dist
-          path: dist
-      - name: Deploy to Firebase
-        uses: joinflux/firebase-tools@v9.16.0
-        with:
-          args: deploy --project=typescript-study-59fb1 --only hosting
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools
+      - name: Deploy to Firebase Hosting
+        run: firebase deploy --project=suimote-project --only hosting
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}

@@ -7,6 +7,7 @@ import ProfilePage from "./pages/ProfilePage";
 import ProfileEditPage from "./pages/ProfileEditPage";
 import UserListPage from "./pages/UserListPage";
 import UserProfilePage from "./pages/UserProfilePage";
+import AuthPage from "./pages/AuthPage";
 import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/auth" element={<AuthPage />} />
         <Route path="/records" element={<RecordsPage />} />
         <Route path="/records/new" element={<AddRecordPage />} />
         <Route path="/records/:id" element={<RecordDetailPage />} />

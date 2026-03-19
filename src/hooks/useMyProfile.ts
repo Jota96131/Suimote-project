@@ -44,7 +44,7 @@ export function useMyProfile() {
     fetch();
   }, [user]);
 
-  async function updateProfile(updates: Partial<Pick<Profile, "nickname" | "avatar_url" | "bio" | "home_pool" | "area_id">>) {
+  async function updateProfile(updates: Partial<Pick<Profile, "nickname" | "avatar_url" | "bio" | "home_pool" | "area_id" | "matching_opt_in">>) {
     if (!user) return;
     setError(null);
 

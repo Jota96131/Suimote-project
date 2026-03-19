@@ -5,6 +5,9 @@ import RecordDetailPage from "./pages/RecordDetailPage";
 import AddRecordPage from "./pages/AddRecordPage";
 import ProfilePage from "./pages/ProfilePage";
 import ProfileEditPage from "./pages/ProfileEditPage";
+import UserListPage from "./pages/UserListPage";
+import UserProfilePage from "./pages/UserProfilePage";
+import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
   return (
@@ -14,8 +17,10 @@ function App() {
         <Route path="/records" element={<RecordsPage />} />
         <Route path="/records/new" element={<AddRecordPage />} />
         <Route path="/records/:id" element={<RecordDetailPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/profile/edit" element={<ProfileEditPage />} />
+        <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
+        <Route path="/profile/edit" element={<PrivateRoute><ProfileEditPage /></PrivateRoute>} />
+        <Route path="/users" element={<PrivateRoute><UserListPage /></PrivateRoute>} />
+        <Route path="/users/:id" element={<PrivateRoute><UserProfilePage /></PrivateRoute>} />
       </Routes>
     </BrowserRouter>
   );

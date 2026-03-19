@@ -30,6 +30,7 @@ export type Profile = {
   bio: string | null;
   home_pool: string | null;
   area_id: string | null;
+  matching_opt_in: boolean;
   created_at: string;
   areas?: Area | null;  // join時に含まれるエリア情報
 };

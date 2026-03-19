@@ -14,6 +14,7 @@ export default function ProfileEditPage() {
   const [bio, setBio] = useState("");
   const [homePool, setHomePool] = useState("");
   const [areaId, setAreaId] = useState("");
+  const [matchingOptIn, setMatchingOptIn] = useState(false);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
@@ -26,6 +27,7 @@ export default function ProfileEditPage() {
     setBio(profile.bio ?? "");
     setHomePool(profile.home_pool ?? "");
     setAreaId(profile.area_id ?? "");
+    setMatchingOptIn(profile.matching_opt_in ?? false);
     setAvatarPreview(profile.avatar_url);
   }, [profile]);
 
@@ -89,6 +91,7 @@ export default function ProfileEditPage() {
           home_pool: homePool || null,
           area_id: areaId || null,
           avatar_url: avatarUrl,
+          matching_opt_in: matchingOptIn,
         });
 
       if (updateErr) {
@@ -233,6 +236,31 @@ export default function ProfileEditPage() {
               </option>
             ))}
           </select>
+        </div>
+
+        {/* マッチング機能 */}
+        <div className="flex items-center justify-between rounded border px-3 py-3">
+          <div>
+            <p className="text-sm font-medium">マッチング機能</p>
+            <p className="text-xs text-muted-foreground">
+              ONにすると他のユーザーとマッチングできます
+            </p>
+          </div>
+          <button
+            type="button"
+            role="switch"
+            aria-checked={matchingOptIn}
+            onClick={() => setMatchingOptIn(!matchingOptIn)}
+            className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full transition-colors ${
+              matchingOptIn ? "bg-blue-600" : "bg-gray-300"
+            }`}
+          >
+            <span
+              className={`pointer-events-none inline-block h-5 w-5 translate-y-0.5 rounded-full bg-white shadow transition-transform ${
+                matchingOptIn ? "translate-x-5" : "translate-x-0.5"
+              }`}
+            />
+          </button>
         </div>
 
         {error && <p className="text-sm text-red-600">{error}</p>}

@@ -13,11 +13,10 @@ export function useAreaUsers() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const canFetch = Boolean(user && profile?.area_id);
+
   useEffect(() => {
-    if (!user || !profile?.area_id) {
-      setLoading(false);
-      return;
-    }
+    if (!canFetch) return;
 
     async function fetch() {
       setLoading(true);
@@ -56,7 +55,7 @@ export function useAreaUsers() {
     }
 
     fetch();
-  }, [user, profile?.area_id]);
+  }, [canFetch, user, profile]);
 
   return { users, loading, error };
 }

@@ -15,7 +15,7 @@ beforeEach(() => {
 describe("useMyStats", () => {
   it("累計記録を取得できる", async () => {
     const mockStats = { total_distance: 50000, total_count: 30 };
-    mockSupabase.rpc.mockResolvedValue({ data: mockStats, error: null });
+    mockSupabase.rpc.mockResolvedValue({ data: mockStats, error: null, count: null, status: 200, statusText: "OK" } as any);
 
     const { result } = renderHook(() => useMyStats());
 
@@ -30,8 +30,8 @@ describe("useMyStats", () => {
   it("get_my_stats RPCをuser_idで呼び出す", async () => {
     mockSupabase.rpc.mockResolvedValue({
       data: { total_distance: 0, total_count: 0 },
-      error: null,
-    });
+      error: null, count: null, status: 200, statusText: "OK",
+    } as any);
 
     renderHook(() => useMyStats());
 
@@ -45,8 +45,8 @@ describe("useMyStats", () => {
   it("エラー発生時にerrorをセットする", async () => {
     mockSupabase.rpc.mockResolvedValue({
       data: null,
-      error: { message: "RPC実行エラー" },
-    });
+      error: { message: "RPC実行エラー" }, count: null, status: 400, statusText: "Bad Request",
+    } as any);
 
     const { result } = renderHook(() => useMyStats());
 

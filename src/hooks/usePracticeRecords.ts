@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { supabase } from "../supabase";
 import type { PracticeRecordWithFacility } from "../types";
 
@@ -7,23 +7,24 @@ export function usePracticeRecords() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    async function fetchRecords() {
-      const { data, error: queryError } = await supabase
-        .from("practice_records")
-        .select("*")
-        .order("date", { ascending: false });
+  const fetchRecords = useCallback(async () => {
+    setLoading(true);
+    const { data, error: queryError } = await supabase
+      .from("practice_records")
+      .select("*")
+      .order("date", { ascending: false });
 
-      if (queryError) {
-        setError(queryError.message);
-      } else {
-        setRecords((data as PracticeRecordWithFacility[]) ?? []);
-      }
-      setLoading(false);
+    if (queryError) {
+      setError(queryError.message);
+    } else {
+      setRecords((data as PracticeRecordWithFacility[]) ?? []);
     }
-
-    fetchRecords();
+    setLoading(false);
   }, []);
 
-  return { records, loading, error };
+  useEffect(() => {
+    fetchRecords();
+  }, [fetchRecords]);
+
+  return { records, loading, error, refetch: fetchRecords };
 }

@@ -23,8 +23,31 @@ export function usePracticeRecords() {
   }, []);
 
   useEffect(() => {
-    fetchRecords();
-  }, [fetchRecords]);
+    let ignore = false;
+
+    async function load() {
+      setLoading(true);
+      const { data, error: queryError } = await supabase
+        .from("practice_records")
+        .select("*")
+        .order("date", { ascending: false });
+
+      if (ignore) return;
+
+      if (queryError) {
+        setError(queryError.message);
+      } else {
+        setRecords((data as PracticeRecord[]) ?? []);
+      }
+      setLoading(false);
+    }
+
+    load();
+
+    return () => {
+      ignore = true;
+    };
+  }, []);
 
   return { records, loading, error, refetch: fetchRecords };
 }

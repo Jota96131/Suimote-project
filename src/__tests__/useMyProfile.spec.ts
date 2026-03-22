@@ -36,7 +36,7 @@ describe("useMyProfile", () => {
         return {
           select: jest.fn().mockReturnValue({
             eq: jest.fn().mockReturnValue({
-              single: jest.fn().mockResolvedValue({ data: mockProfile, error: null }),
+              maybeSingle: jest.fn().mockResolvedValue({ data: mockProfile, error: null }),
             }),
           }),
         } as any;
@@ -66,7 +66,7 @@ describe("useMyProfile", () => {
         return {
           select: jest.fn().mockReturnValue({
             eq: jest.fn().mockReturnValue({
-              single: jest.fn().mockResolvedValue({
+              maybeSingle: jest.fn().mockResolvedValue({
                 data: null,
                 error: { message: "プロフィールが見つかりません" },
               }),
@@ -91,9 +91,9 @@ describe("useMyProfile", () => {
     expect(result.current.profile).toBeNull();
   });
 
-  it("profilesテーブルをuser_idで絞り込んでsingle取得する", async () => {
+  it("profilesテーブルをuser_idで絞り込んでmaybeSingle取得する", async () => {
     const mockSingle = jest.fn().mockResolvedValue({ data: mockProfile, error: null });
-    const mockEq = jest.fn().mockReturnValue({ single: mockSingle });
+    const mockEq = jest.fn().mockReturnValue({ maybeSingle: mockSingle });
     const mockSelect = jest.fn().mockReturnValue({ eq: mockEq });
 
     mockSupabase.from.mockImplementation((table: string) => {

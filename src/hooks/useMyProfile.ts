@@ -22,7 +22,7 @@ export function useMyProfile() {
           .from("profiles")
           .select("*, areas(id, name)")
           .eq("user_id", user!.id)
-          .single(),
+          .maybeSingle(),
         supabase.from("areas").select("*").order("name"),
       ]);
 
@@ -63,7 +63,7 @@ export function useMyProfile() {
       .from("profiles")
       .select("*, areas(id, name)")
       .eq("user_id", user.id)
-      .single();
+      .maybeSingle();
 
     if (refetchErr) {
       setError(refetchErr.message);

@@ -39,3 +39,11 @@ export type MyStats = {
   total_distance: number;  // 累計距離 (m)
   total_count: number;     // 累計回数
 };
+
+/** likes テーブルに対応する型 */
+export type Like = {
+  id: string;
+  from_user_id: string;
+  to_user_id: string;
+  created_at: string;
+};

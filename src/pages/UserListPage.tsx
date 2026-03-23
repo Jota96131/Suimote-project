@@ -1,11 +1,13 @@
 import { Link } from "react-router-dom";
-import { User } from "lucide-react";
+import { User, Heart } from "lucide-react";
 import { useAreaUsers } from "../hooks/useAreaUsers";
 import { useMyProfile } from "../hooks/useMyProfile";
+import { useLike } from "../hooks/useLike";
 
 export default function UserListPage() {
   const { profile } = useMyProfile();
   const { users, loading, error } = useAreaUsers();
+  const { isLiked, sendLike, removeLike } = useLike();
 
   if (loading) {
     return (
@@ -83,10 +85,10 @@ export default function UserListPage() {
       ) : (
         <ul className="mt-6 flex flex-col gap-3">
           {users.map((u) => (
-            <li key={u.id}>
+            <li key={u.id} className="rounded-lg border p-4">
               <Link
                 to={`/users/${u.user_id}`}
-                className="rounded-lg border p-4 hover:bg-gray-50 block"
+                className="hover:bg-gray-50 block"
               >
                 <div className="flex items-center gap-3">
                   <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 text-blue-600">
@@ -122,6 +124,22 @@ export default function UserListPage() {
                   </div>
                 </div>
               </Link>
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (isLiked(u.user_id)) {
+                    removeLike(u.user_id);
+                  } else {
+                    sendLike(u.user_id);
+                  }
+                }}
+                className="mt-3 flex w-full items-center justify-center gap-1 rounded-lg border py-2 text-sm font-medium transition-colors hover:bg-gray-50"
+              >
+                <Heart
+                  className={`h-4 w-4 ${isLiked(u.user_id) ? "fill-red-500 text-red-500" : "text-gray-400"}`}
+                />
+                {isLiked(u.user_id) ? "いいね済み" : "いいね"}
+              </button>
             </li>
           ))}
         </ul>

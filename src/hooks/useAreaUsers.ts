@@ -4,7 +4,7 @@ import { useAuth } from "./useAuth";
 import { useMyProfile } from "./useMyProfile";
 import type { Profile, MyStats } from "../types";
 
-export type ProfileWithStats = Profile & { stats: MyStats };
+export type ProfileWithStats = Profile & { stats: MyStats; monthlyCount: number };
 
 export function useAreaUsers() {
   const { user } = useAuth();
@@ -40,12 +40,14 @@ export function useAreaUsers() {
       // 各ユーザーの累計記録を取得
       const withStats = await Promise.all(
         profiles.map(async (p) => {
-          const { data: statsData } = await supabase.rpc("get_user_stats", {
-            target_user_id: p.user_id,
-          });
+          const [statsRes, monthlyRes] = await Promise.all([
+            supabase.rpc("get_user_stats", { target_user_id: p.user_id }),
+            supabase.rpc("get_monthly_practice_count", { target_user_id: p.user_id }),
+          ]);
           return {
             ...p,
-            stats: (statsData as MyStats) ?? { total_distance: 0, total_count: 0 },
+            stats: (statsRes.data as MyStats) ?? { total_distance: 0, total_count: 0 },
+            monthlyCount: (monthlyRes.data as number) ?? 0,
           };
         })
       );

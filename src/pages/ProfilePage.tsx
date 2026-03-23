@@ -2,10 +2,15 @@ import { Link } from "react-router-dom";
 import { User } from "lucide-react";
 import { useMyProfile } from "../hooks/useMyProfile";
 import { useMyStats } from "../hooks/useMyStats";
+import { useMonthlyCount } from "../hooks/useMonthlyCount";
+import { useAuth } from "../hooks/useAuth";
+import SwimBadge from "../components/SwimBadge";
 
 export default function ProfilePage() {
+  const { user } = useAuth();
   const { profile, loading, error, updateProfile } = useMyProfile();
   const { stats, loading: statsLoading } = useMyStats();
+  const { count: monthlyCount } = useMonthlyCount(user?.id);
 
   async function handleToggleMatching() {
     if (!profile) return;
@@ -78,6 +83,7 @@ export default function ProfilePage() {
           {profile.areas && (
             <p className="text-sm text-muted-foreground">{profile.areas.name}</p>
           )}
+          <SwimBadge monthlyCount={monthlyCount} />
         </div>
       </div>
 

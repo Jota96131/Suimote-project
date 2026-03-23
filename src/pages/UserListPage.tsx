@@ -1,13 +1,16 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { User, Heart } from "lucide-react";
-import { useAreaUsers } from "../hooks/useAreaUsers";
+import { User, Heart, X } from "lucide-react";
+import { useAreaUsers, type ProfileWithStats } from "../hooks/useAreaUsers";
 import { useMyProfile } from "../hooks/useMyProfile";
 import { useLike } from "../hooks/useLike";
+import SwimBadge from "../components/SwimBadge";
 
 export default function UserListPage() {
   const { profile } = useMyProfile();
   const { users, loading, error } = useAreaUsers();
-  const { isLiked, sendLike, removeLike } = useLike();
+  const { isLiked, isMatched, sendLike, removeLike } = useLike();
+  const [matchedUser, setMatchedUser] = useState<ProfileWithStats | null>(null);
 
   if (loading) {
     return (
@@ -73,10 +76,63 @@ export default function UserListPage() {
         ← 記録一覧に戻る
       </Link>
 
-      <h1 className="mt-4 text-xl font-bold">同じエリアのユーザー</h1>
+      <div className="mt-4 flex items-center justify-between">
+        <h1 className="text-xl font-bold">同じエリアのユーザー</h1>
+        <Link to="/matches" className="text-sm text-pink-600 underline">
+          マッチ一覧
+        </Link>
+      </div>
       <p className="mt-1 text-sm text-muted-foreground">
         {profile.areas?.name}
       </p>
+
+      {matchedUser && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="relative mx-4 w-full max-w-sm rounded-2xl bg-white p-6 text-center shadow-lg">
+            <button
+              onClick={() => setMatchedUser(null)}
+              className="absolute right-3 top-3 rounded-full p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+            >
+              <X className="h-5 w-5" />
+            </button>
+
+            <Heart className="mx-auto h-12 w-12 fill-pink-500 text-pink-500" />
+
+            <p className="mt-3 text-xl font-bold text-pink-600">
+              マッチしました！
+            </p>
+
+            <div className="mt-4 flex flex-col items-center gap-2">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-blue-100 text-blue-600">
+                {matchedUser.avatar_url ? (
+                  <img
+                    src={matchedUser.avatar_url}
+                    alt="avatar"
+                    className="h-16 w-16 rounded-full object-cover"
+                  />
+                ) : (
+                  <User className="h-8 w-8" />
+                )}
+              </div>
+              <p className="text-lg font-bold">{matchedUser.nickname}</p>
+              {matchedUser.home_pool && (
+                <p className="text-sm text-muted-foreground">{matchedUser.home_pool}</p>
+              )}
+            </div>
+
+            <p className="mt-4 text-sm text-pink-500">
+              同じエリアのプールで会ってみよう
+            </p>
+
+            <button
+              onClick={() => setMatchedUser(null)}
+              className="mt-5 w-full rounded-lg bg-pink-500 py-2 text-sm font-medium text-white hover:bg-pink-600"
+            >
+              閉じる
+            </button>
+          </div>
+        </div>
+      )}
 
       {users.length === 0 ? (
         <p className="mt-8 text-center text-sm text-muted-foreground">
@@ -107,6 +163,7 @@ export default function UserListPage() {
                     <p className="text-xs text-muted-foreground">
                       {u.areas?.name}{u.home_pool && ` / ${u.home_pool}`}
                     </p>
+                    <SwimBadge monthlyCount={u.monthlyCount} size="sm" />
                   </div>
                 </div>
                 <div className="mt-3 grid grid-cols-2 gap-2">
@@ -124,22 +181,33 @@ export default function UserListPage() {
                   </div>
                 </div>
               </Link>
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (isLiked(u.user_id)) {
-                    removeLike(u.user_id);
-                  } else {
-                    sendLike(u.user_id);
-                  }
-                }}
-                className="mt-3 flex w-full items-center justify-center gap-1 rounded-lg border py-2 text-sm font-medium transition-colors hover:bg-gray-50"
-              >
-                <Heart
-                  className={`h-4 w-4 ${isLiked(u.user_id) ? "fill-red-500 text-red-500" : "text-gray-400"}`}
-                />
-                {isLiked(u.user_id) ? "いいね済み" : "いいね"}
-              </button>
+              {isMatched(u.user_id) ? (
+                <div className="mt-3 flex w-full items-center justify-center gap-1 rounded-lg bg-pink-50 border border-pink-200 py-2 text-sm font-medium text-pink-600">
+                  <Heart className="h-4 w-4 fill-pink-500 text-pink-500" />
+                  マッチ中
+                </div>
+              ) : (
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (isLiked(u.user_id)) {
+                      removeLike(u.user_id);
+                    } else {
+                      sendLike(u.user_id).then((matched) => {
+                        if (matched) {
+                          setMatchedUser(u);
+                        }
+                      });
+                    }
+                  }}
+                  className="mt-3 flex w-full items-center justify-center gap-1 rounded-lg border py-2 text-sm font-medium transition-colors hover:bg-gray-50"
+                >
+                  <Heart
+                    className={`h-4 w-4 ${isLiked(u.user_id) ? "fill-red-500 text-red-500" : "text-gray-400"}`}
+                  />
+                  {isLiked(u.user_id) ? "いいね済み" : "いいね"}
+                </button>
+              )}
             </li>
           ))}
         </ul>

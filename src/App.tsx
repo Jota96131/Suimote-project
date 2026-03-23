@@ -7,6 +7,7 @@ import ProfilePage from "./pages/ProfilePage";
 import ProfileEditPage from "./pages/ProfileEditPage";
 import UserListPage from "./pages/UserListPage";
 import UserProfilePage from "./pages/UserProfilePage";
+import MatchesPage from "./pages/MatchesPage";
 import AuthPage from "./pages/AuthPage";
 import PrivateRoute from "./components/PrivateRoute";
 
@@ -23,6 +24,7 @@ function App() {
         <Route path="/profile/edit" element={<PrivateRoute><ProfileEditPage /></PrivateRoute>} />
         <Route path="/users" element={<PrivateRoute><UserListPage /></PrivateRoute>} />
         <Route path="/users/:id" element={<PrivateRoute><UserProfilePage /></PrivateRoute>} />
+        <Route path="/matches" element={<PrivateRoute><MatchesPage /></PrivateRoute>} />
       </Routes>
     </BrowserRouter>
   );

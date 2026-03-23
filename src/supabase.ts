@@ -5,3 +5,6 @@ export const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
   import.meta.env.VITE_SUPABASE_ANON_KEY,
 );
+
+// DevTools Consoleからアクセス可能にする（ログアウト等のテスト用）
+(window as unknown as Record<string, unknown>).supabase = supabase;

@@ -6,9 +6,10 @@ import type { Like } from "../types";
 export function useLike() {
   const { user } = useAuth();
   const [likedUserIds, setLikedUserIds] = useState<Set<string>>(new Set());
+  const [matchedUserIds, setMatchedUserIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
 
-  // 自分が送ったいいね一覧を取得
+  // 自分が送った/もらったいいね一覧を取得してマッチ判定
   useEffect(() => {
     if (!user) return;
 
@@ -16,15 +17,36 @@ export function useLike() {
 
     async function fetchLikes() {
       setLoading(true);
-      const { data } = await supabase
+
+      // 自分が送ったいいね
+      const { data: sent } = await supabase
         .from("likes")
         .select("to_user_id")
         .eq("from_user_id", user!.id);
 
+      // 自分がもらったいいね
+      const { data: received } = await supabase
+        .from("likes")
+        .select("from_user_id")
+        .eq("to_user_id", user!.id);
+
       if (ignore) return;
 
-      const ids = new Set((data as Pick<Like, "to_user_id">[] ?? []).map((l) => l.to_user_id));
-      setLikedUserIds(ids);
+      const sentIds = new Set(
+        (sent as Pick<Like, "to_user_id">[] ?? []).map((l) => l.to_user_id)
+      );
+      const receivedIds = new Set(
+        (received as Pick<Like, "from_user_id">[] ?? []).map((l) => l.from_user_id)
+      );
+
+      // 相互いいね = 自分が送った & 相手からももらった
+      const matched = new Set<string>();
+      sentIds.forEach((id) => {
+        if (receivedIds.has(id)) matched.add(id);
+      });
+
+      setLikedUserIds(sentIds);
+      setMatchedUserIds(matched);
       setLoading(false);
     }
 
@@ -35,10 +57,10 @@ export function useLike() {
     };
   }, [user]);
 
-  // いいねを送る
+  // いいねを送る（マッチ成立したかどうかを返す）
   const sendLike = useCallback(
-    async (toUserId: string) => {
-      if (!user) return;
+    async (toUserId: string): Promise<boolean> => {
+      if (!user) return false;
 
       // 楽観的UI更新
       setLikedUserIds((prev) => new Set(prev).add(toUserId));
@@ -48,13 +70,24 @@ export function useLike() {
         .insert({ from_user_id: user.id, to_user_id: toUserId });
 
       if (error) {
-        // 失敗時にロールバック
         setLikedUserIds((prev) => {
           const next = new Set(prev);
           next.delete(toUserId);
           return next;
         });
+        return false;
       }
+
+      // 相互いいね判定
+      const { data: isMutual } = await supabase.rpc("check_mutual_like", {
+        target_user_id: toUserId,
+      });
+
+      if (isMutual) {
+        setMatchedUserIds((prev) => new Set(prev).add(toUserId));
+      }
+
+      return isMutual as boolean;
     },
     [user]
   );
@@ -64,8 +97,12 @@ export function useLike() {
     async (toUserId: string) => {
       if (!user) return;
 
-      // 楽観的UI更新
       setLikedUserIds((prev) => {
+        const next = new Set(prev);
+        next.delete(toUserId);
+        return next;
+      });
+      setMatchedUserIds((prev) => {
         const next = new Set(prev);
         next.delete(toUserId);
         return next;
@@ -78,7 +115,6 @@ export function useLike() {
         .eq("to_user_id", toUserId);
 
       if (error) {
-        // 失敗時にロールバック
         setLikedUserIds((prev) => new Set(prev).add(toUserId));
       }
     },
@@ -90,5 +126,10 @@ export function useLike() {
     [likedUserIds]
   );
 
-  return { isLiked, sendLike, removeLike, loading };
+  const isMatched = useCallback(
+    (toUserId: string) => matchedUserIds.has(toUserId),
+    [matchedUserIds]
+  );
+
+  return { isLiked, isMatched, sendLike, removeLike, loading };
 }

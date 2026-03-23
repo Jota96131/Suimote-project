@@ -1,4 +1,14 @@
-# renderHookで非同期フックをテストしたらact警告＆タイムアウトした話
+---
+status: draft
+tags: React, Jest, テスト, renderHook, 個人開発
+twitter: |
+  useEffect+非同期+setStateのフックをrenderHookでテストしたらact警告&タイムアウトで全滅した話を書きました。
+  ロジックは関数テスト、UIはコンポーネントテストに分けたら安定。
+  #React #Jest #個人開発
+  [ここにQiitaのURLを貼る]
+---
+
+# An update to TestComponent inside a test was not wrapped in act(...)
 
 ## はじめに
 

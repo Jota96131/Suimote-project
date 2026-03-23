@@ -1,4 +1,14 @@
-# Supabaseのチェーンをモックしたら "select is not a function" になった話
+---
+status: draft
+tags: Supabase, Jest, テスト, TypeScript, 初心者
+twitter: |
+  SupabaseのメソッドチェーンをmockImplementationで上書きしたら "select is not a function" になった話を書きました。
+  mockReturnThis()を壊さず末端だけ上書きするのがコツ。
+  #Supabase #Jest #個人開発
+  [ここにQiitaのURLを貼る]
+---
+
+# select is not a function
 
 ## はじめに
 

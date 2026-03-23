@@ -1,5 +1,5 @@
 ---
-status: draft
+status: posted
 tags: Supabase, Jest, テスト, TypeScript, 初心者
 twitter: |
   SupabaseのメソッドチェーンをmockImplementationで上書きしたら "select is not a function" になった話を書きました。

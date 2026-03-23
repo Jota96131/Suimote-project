@@ -1,5 +1,5 @@
 ---
-status: draft
+status: posted
 tags: React, Jest, テスト, renderHook, 個人開発
 twitter: |
   useEffect+非同期+setStateのフックをrenderHookでテストしたらact警告&タイムアウトで全滅した話を書きました。

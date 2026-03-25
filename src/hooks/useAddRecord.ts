@@ -43,9 +43,9 @@ export function useAddRecord() {
     const { error: insertError } = await supabase.from("practice_records").insert({
       date: form.date,
       distance: Number(form.distance),
-      time: form.time,
+      time: form.time || null,
       stroke: form.stroke,
-      facility: form.facility,
+      facility: form.facility || null,
       memo: form.memo || null,
       user_id: user?.id ?? null,
     });

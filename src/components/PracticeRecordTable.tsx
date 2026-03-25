@@ -33,7 +33,7 @@ export default function PracticeRecordTable({ records }: Props) {
             </div>
             <div className="mt-1 flex items-center gap-3 text-xs text-[#8892A8]">
               <span>{record.date}</span>
-              <span>{formatTime(Number(record.time))}</span>
+              {record.time && <span>{formatTime(Number(record.time))}</span>}
             </div>
             {record.facility && (
               <div className="mt-1 flex items-center gap-1 text-xs text-[#8892A8]">

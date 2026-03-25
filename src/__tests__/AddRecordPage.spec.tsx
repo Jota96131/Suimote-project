@@ -32,9 +32,9 @@ describe("AddRecordPage", () => {
 
     expect(screen.getByLabelText("日付")).toBeInTheDocument();
     expect(screen.getByLabelText("距離 (m)")).toBeInTheDocument();
-    expect(screen.getByLabelText("タイム (秒)")).toBeInTheDocument();
+    expect(screen.getByLabelText("タイム (秒)（任意）")).toBeInTheDocument();
     expect(screen.getByLabelText("泳法")).toBeInTheDocument();
-    expect(screen.getByLabelText("施設名")).toBeInTheDocument();
+    expect(screen.getByLabelText("施設名（任意）")).toBeInTheDocument();
     expect(screen.getByLabelText("メモ（任意）")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "保存する" })).toBeInTheDocument();
   });
@@ -70,8 +70,8 @@ describe("AddRecordPage", () => {
     await userEvent.clear(screen.getByLabelText("日付"));
     await userEvent.type(screen.getByLabelText("日付"), "2024-03-01");
     await userEvent.type(screen.getByLabelText("距離 (m)"), "1000");
-    await userEvent.type(screen.getByLabelText("タイム (秒)"), "3600");
-    await userEvent.type(screen.getByLabelText("施設名"), "市民プール");
+    await userEvent.type(screen.getByLabelText("タイム (秒)（任意）"), "3600");
+    await userEvent.type(screen.getByLabelText("施設名（任意）"), "市民プール");
 
     await userEvent.click(screen.getByRole("button", { name: "保存する" }));
 
@@ -93,8 +93,8 @@ describe("AddRecordPage", () => {
     await userEvent.clear(screen.getByLabelText("日付"));
     await userEvent.type(screen.getByLabelText("日付"), "2024-03-01");
     await userEvent.type(screen.getByLabelText("距離 (m)"), "1000");
-    await userEvent.type(screen.getByLabelText("タイム (秒)"), "3600");
-    await userEvent.type(screen.getByLabelText("施設名"), "市民プール");
+    await userEvent.type(screen.getByLabelText("タイム (秒)（任意）"), "3600");
+    await userEvent.type(screen.getByLabelText("施設名（任意）"), "市民プール");
 
     await userEvent.click(screen.getByRole("button", { name: "保存する" }));
 
@@ -114,8 +114,8 @@ describe("AddRecordPage", () => {
     await userEvent.clear(screen.getByLabelText("日付"));
     await userEvent.type(screen.getByLabelText("日付"), "2024-03-01");
     await userEvent.type(screen.getByLabelText("距離 (m)"), "1000");
-    await userEvent.type(screen.getByLabelText("タイム (秒)"), "3600");
-    await userEvent.type(screen.getByLabelText("施設名"), "市民プール");
+    await userEvent.type(screen.getByLabelText("タイム (秒)（任意）"), "3600");
+    await userEvent.type(screen.getByLabelText("施設名（任意）"), "市民プール");
 
     await userEvent.click(screen.getByRole("button", { name: "保存する" }));
 

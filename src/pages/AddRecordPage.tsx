@@ -58,7 +58,7 @@ export default function AddRecordPage() {
 
         <div className="flex flex-col gap-1">
           <label htmlFor="time" className="text-sm font-medium text-[#8892A8]">
-            タイム (秒)
+            タイム (秒)（任意）
           </label>
           <input
             id="time"
@@ -68,8 +68,8 @@ export default function AddRecordPage() {
             onChange={handleChange}
             min={0}
             step="0.01"
-            required
             className={inputClass}
+            placeholder="例: 1230"
           />
         </div>
 
@@ -94,7 +94,7 @@ export default function AddRecordPage() {
 
         <div className="flex flex-col gap-1">
           <label htmlFor="facility" className="text-sm font-medium text-[#8892A8]">
-            施設名
+            施設名（任意）
           </label>
           <input
             id="facility"
@@ -102,7 +102,6 @@ export default function AddRecordPage() {
             name="facility"
             value={form.facility}
             onChange={handleChange}
-            required
             className={inputClass}
             placeholder="例: 渋谷区スポーツセンター"
           />

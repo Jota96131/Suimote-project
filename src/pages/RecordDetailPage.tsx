@@ -41,9 +41,9 @@ export default function RecordDetailPage() {
   const items = [
     { icon: Calendar, label: "日付", value: record.date },
     { icon: Ruler, label: "距離", value: `${record.distance} m` },
-    { icon: Timer, label: "タイム", value: formatTime(Number(record.time)) },
+    ...(record.time ? [{ icon: Timer, label: "タイム", value: formatTime(Number(record.time)) }] : []),
     { icon: Waves, label: "泳法", value: record.stroke },
-    { icon: MapPin, label: "施設", value: record.facility },
+    ...(record.facility ? [{ icon: MapPin, label: "施設", value: record.facility }] : []),
     ...(record.memo ? [{ icon: FileText, label: "メモ", value: record.memo }] : []),
   ];
 

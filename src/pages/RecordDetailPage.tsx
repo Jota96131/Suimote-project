@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, Calendar, Ruler, Timer, Waves, MapPin, FileText, Trash2 } from "lucide-react";
+import { ArrowLeft, Calendar, Ruler, Timer, Waves, MapPin, FileText, Trash2, Pencil } from "lucide-react";
 import { useRecordDetail } from "../hooks/useRecordDetail";
 import { useDeleteRecord } from "../hooks/useDeleteRecord";
 import { formatTime } from "../utils/formatTime";
@@ -77,6 +77,14 @@ export default function RecordDetailPage() {
           </div>
         ))}
       </div>
+
+      <Link
+        to={`/records/${id}/edit`}
+        className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border border-[#1E2640] bg-[#131829] px-4 py-3 text-sm font-medium text-[#F0F0F0] transition hover:border-[#00D4FF]/50"
+      >
+        <Pencil className="h-4 w-4" />
+        この記録を編集
+      </Link>
 
       {deleteError && (
         <p className="mt-4 text-sm text-[#FF3B8B]">{deleteError}</p>

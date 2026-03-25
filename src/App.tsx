@@ -3,6 +3,7 @@ import HomePage from "./pages/HomePage";
 import RecordsPage from "./pages/RecordsPage";
 import RecordDetailPage from "./pages/RecordDetailPage";
 import AddRecordPage from "./pages/AddRecordPage";
+import EditRecordPage from "./pages/EditRecordPage";
 import ProfilePage from "./pages/ProfilePage";
 import ProfileEditPage from "./pages/ProfileEditPage";
 import UserListPage from "./pages/UserListPage";
@@ -25,6 +26,7 @@ function AppContent() {
           <Route path="/records" element={<RecordsPage />} />
           <Route path="/records/new" element={<AddRecordPage />} />
           <Route path="/records/:id" element={<RecordDetailPage />} />
+          <Route path="/records/:id/edit" element={<EditRecordPage />} />
           <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
           <Route path="/profile/edit" element={<PrivateRoute><ProfileEditPage /></PrivateRoute>} />
           <Route path="/users" element={<PrivateRoute><UserListPage /></PrivateRoute>} />

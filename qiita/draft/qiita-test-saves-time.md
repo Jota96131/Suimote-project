@@ -1,3 +1,13 @@
+---
+status: draft
+tags: React, Jest, テスト, 個人開発, TypeScript
+twitter: |
+  テストがあると4秒で133項目を確認できた話を書きました。
+  手動30分 vs 自動4秒、一度書けば何度でも使える最強の味方。
+  #React #Jest #個人開発
+  [ここにQiitaのURLを貼る]
+---
+
 # 【React×Jest】テストがあると4秒で133項目を確認できた話
 
 ## はじめに

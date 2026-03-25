@@ -16,7 +16,10 @@ export function useAreaUsers() {
   const canFetch = Boolean(user && profile?.area_id);
 
   useEffect(() => {
-    if (!canFetch) return;
+    if (!canFetch) {
+      setLoading(false);
+      return;
+    }
 
     async function fetch() {
       setLoading(true);

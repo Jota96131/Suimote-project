@@ -34,7 +34,7 @@ export default function MatchesPage() {
       ) : (
         <ul className="mt-6 flex flex-col gap-3">
           {matches.map((m) => (
-            <li key={m.id}>
+            <li key={m.user_id}>
               <Link
                 to={`/users/${m.user_id}`}
                 className="flex items-center gap-3 rounded-2xl border border-[#1E2640] bg-[#131829] p-4 transition hover:border-[#FF3B8B]/40"

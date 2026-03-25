@@ -129,7 +129,7 @@ export default function UserListPage() {
       ) : (
         <ul className="mt-6 flex flex-col gap-3">
           {users.map((u) => (
-            <li key={u.id} className="rounded-2xl border border-[#1E2640] bg-[#131829] p-4">
+            <li key={u.user_id} className="rounded-2xl border border-[#1E2640] bg-[#131829] p-4">
               <Link to={`/users/${u.user_id}`}>
                 <div className="flex items-center gap-3">
                   <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#00D4FF]/10">

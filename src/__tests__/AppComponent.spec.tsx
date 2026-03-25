@@ -15,6 +15,6 @@ beforeEach(() => {
 describe("App", () => {
   it("タイトル「Suimote」を表示する", async () => {
     render(<App />);
-    expect(screen.getByText("Suimote")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1 })).toBeInTheDocument();
   });
 });

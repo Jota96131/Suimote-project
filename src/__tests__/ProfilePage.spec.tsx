@@ -152,10 +152,9 @@ describe("ProfilePage", () => {
     expect(editLink.closest("a")).toHaveAttribute("href", "/profile/edit");
   });
 
-  it("「← 記録一覧に戻る」リンクが /records を指す", () => {
+  it("ページタイトル「マイページ」を表示する", () => {
     renderProfilePage();
-    const backLink = screen.getByText("← 記録一覧に戻る");
-    expect(backLink.closest("a")).toHaveAttribute("href", "/records");
+    expect(screen.getByText("マイページ")).toBeInTheDocument();
   });
 
   it("OFFからONに切り替えると確認ダイアログ後にupdateProfileが呼ばれる", () => {

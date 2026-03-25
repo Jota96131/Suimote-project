@@ -171,7 +171,7 @@ describe("ProfileEditPage", () => {
 
   it("「← プロフィールに戻る」リンクが /profile を指す", () => {
     renderEditPage();
-    const backLink = screen.getByText("← プロフィールに戻る");
+    const backLink = screen.getByText("プロフィールに戻る");
     expect(backLink.closest("a")).toHaveAttribute("href", "/profile");
   });
 

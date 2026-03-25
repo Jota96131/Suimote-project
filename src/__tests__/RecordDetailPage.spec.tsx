@@ -131,7 +131,7 @@ describe("RecordDetailPage", () => {
   });
 
   // コンポーネントテスト: 「← 一覧に戻る」リンクの表示
-  it("詳細表示時に「← 一覧に戻る」リンクを表示する", async () => {
+  it("詳細表示時に「一覧に戻る」リンクを表示する", async () => {
     mockSupabase.from.mockReturnValue({
       select: jest.fn().mockReturnValue({
         eq: jest.fn().mockReturnValue({
@@ -143,10 +143,10 @@ describe("RecordDetailPage", () => {
     renderDetailPage();
 
     await waitFor(() => {
-      expect(screen.getByText("← 一覧に戻る")).toBeInTheDocument();
+      expect(screen.getByText("一覧に戻る")).toBeInTheDocument();
     });
 
-    const backLink = screen.getByText("← 一覧に戻る");
+    const backLink = screen.getByText("一覧に戻る");
     expect(backLink.closest("a")).toHaveAttribute("href", "/records");
   });
 

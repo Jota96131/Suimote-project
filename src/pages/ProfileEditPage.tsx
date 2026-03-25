@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { User } from "lucide-react";
+import { User, ArrowLeft } from "lucide-react";
 import { supabase } from "../supabase";
 import { useMyProfile } from "../hooks/useMyProfile";
 import { useAuth } from "../hooks/useAuth";
+
+const inputClass =
+  "rounded-xl border border-[#1E2640] bg-[#0A0E1A] px-4 py-3 text-sm text-[#F0F0F0] placeholder-[#8892A8] outline-none focus:border-[#00D4FF] transition";
 
 export default function ProfileEditPage() {
   const navigate = useNavigate();
@@ -32,7 +35,6 @@ export default function ProfileEditPage() {
     e.preventDefault();
     if (!user) return;
 
-    // バリデーション
     const errors: Record<string, string> = {};
     if (nickname.trim().length === 0) {
       errors.nickname = "ニックネームを入力してください";
@@ -51,7 +53,6 @@ export default function ProfileEditPage() {
     try {
       let avatarUrl = profile?.avatar_url ?? null;
 
-      // アバター画像をアップロード
       if (avatarFile) {
         const filePath = `${user.id}/avatar`;
         const { error: uploadErr } = await supabase.storage
@@ -71,7 +72,6 @@ export default function ProfileEditPage() {
         avatarUrl = `${urlData.publicUrl}?t=${Date.now()}`;
       }
 
-      // プロフィールを更新（なければ新規作成）
       const { error: updateErr } = await supabase
         .from("profiles")
         .upsert({
@@ -100,7 +100,7 @@ export default function ProfileEditPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-16">
-        <p className="text-muted-foreground">読み込み中...</p>
+        <p className="text-[#8892A8]">読み込み中...</p>
       </div>
     );
   }
@@ -108,9 +108,9 @@ export default function ProfileEditPage() {
   if (fetchError) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center">
-        <p className="text-lg font-medium text-destructive">エラーが発生しました</p>
-        <p className="mt-1 text-sm text-muted-foreground">{fetchError}</p>
-        <Link to="/profile" className="mt-4 text-sm underline">
+        <p className="text-lg font-medium text-[#FF3B8B]">エラーが発生しました</p>
+        <p className="mt-1 text-sm text-[#8892A8]">{fetchError}</p>
+        <Link to="/profile" className="mt-4 text-sm text-[#00D4FF]">
           プロフィールに戻る
         </Link>
       </div>
@@ -118,17 +118,18 @@ export default function ProfileEditPage() {
   }
 
   return (
-    <div className="mx-auto max-w-lg px-4 py-8">
-      <Link to="/profile" className="text-sm underline">
-        ← プロフィールに戻る
+    <div className="mx-auto max-w-lg px-4 py-6">
+      <Link to="/profile" className="flex items-center gap-1 text-sm text-[#8892A8] hover:text-[#00D4FF] transition">
+        <ArrowLeft className="h-4 w-4" />
+        プロフィールに戻る
       </Link>
 
-      <h1 className="mt-4 text-xl font-bold">プロフィール編集</h1>
+      <h1 className="mt-4 text-xl font-bold text-[#F0F0F0]">プロフィール編集</h1>
 
       <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4">
         {/* アバター */}
         <div className="flex flex-col items-center gap-2">
-          <div className="flex h-20 w-20 items-center justify-center rounded-full bg-blue-100 text-blue-600">
+          <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[#00D4FF]/10">
             {avatarPreview ? (
               <img
                 src={avatarPreview}
@@ -136,10 +137,10 @@ export default function ProfileEditPage() {
                 className="h-20 w-20 rounded-full object-cover"
               />
             ) : (
-              <User className="h-10 w-10" />
+              <User className="h-10 w-10 text-[#00D4FF]" />
             )}
           </div>
-          <label className="cursor-pointer text-sm text-blue-600 underline">
+          <label className="cursor-pointer text-sm text-[#00D4FF]">
             画像を変更
             <input
               type="file"
@@ -152,7 +153,7 @@ export default function ProfileEditPage() {
 
         {/* ニックネーム */}
         <div className="flex flex-col gap-1">
-          <label htmlFor="nickname" className="text-sm font-medium">
+          <label htmlFor="nickname" className="text-sm font-medium text-[#8892A8]">
             ニックネーム
           </label>
           <input
@@ -163,19 +164,17 @@ export default function ProfileEditPage() {
             required
             minLength={1}
             maxLength={20}
-            className="rounded border px-3 py-2 text-sm"
+            className={inputClass}
           />
-          <p className="text-xs text-muted-foreground">
-            {nickname.length}/20文字
-          </p>
+          <p className="text-xs text-[#8892A8]">{nickname.length}/20文字</p>
           {fieldErrors.nickname && (
-            <p className="text-xs text-red-600">{fieldErrors.nickname}</p>
+            <p className="text-xs text-[#FF3B8B]">{fieldErrors.nickname}</p>
           )}
         </div>
 
         {/* 自己紹介 */}
         <div className="flex flex-col gap-1">
-          <label htmlFor="bio" className="text-sm font-medium">
+          <label htmlFor="bio" className="text-sm font-medium text-[#8892A8]">
             自己紹介
           </label>
           <textarea
@@ -184,19 +183,17 @@ export default function ProfileEditPage() {
             onChange={(e) => setBio(e.target.value)}
             maxLength={200}
             rows={3}
-            className="rounded border px-3 py-2 text-sm"
+            className={inputClass}
           />
-          <p className="text-xs text-muted-foreground">
-            {bio.length}/200文字
-          </p>
+          <p className="text-xs text-[#8892A8]">{bio.length}/200文字</p>
           {fieldErrors.bio && (
-            <p className="text-xs text-red-600">{fieldErrors.bio}</p>
+            <p className="text-xs text-[#FF3B8B]">{fieldErrors.bio}</p>
           )}
         </div>
 
         {/* ホームプール */}
         <div className="flex flex-col gap-1">
-          <label htmlFor="homePool" className="text-sm font-medium">
+          <label htmlFor="homePool" className="text-sm font-medium text-[#8892A8]">
             ホームプール
           </label>
           <input
@@ -204,20 +201,21 @@ export default function ProfileEditPage() {
             type="text"
             value={homePool}
             onChange={(e) => setHomePool(e.target.value)}
-            className="rounded border px-3 py-2 text-sm"
+            className={inputClass}
+            placeholder="例: 渋谷区スポーツセンター"
           />
         </div>
 
         {/* エリア */}
         <div className="flex flex-col gap-1">
-          <label htmlFor="areaId" className="text-sm font-medium">
+          <label htmlFor="areaId" className="text-sm font-medium text-[#8892A8]">
             所属エリア
           </label>
           <select
             id="areaId"
             value={areaId}
             onChange={(e) => setAreaId(e.target.value)}
-            className="rounded border px-3 py-2 text-sm"
+            className={inputClass}
           >
             <option value="">未選択</option>
             {areas.map((area) => (
@@ -229,10 +227,10 @@ export default function ProfileEditPage() {
         </div>
 
         {/* マッチング機能 */}
-        <div className="flex items-center justify-between rounded border px-3 py-3">
+        <div className="flex items-center justify-between rounded-xl border border-[#1E2640] bg-[#131829] px-4 py-3">
           <div>
-            <p className="text-sm font-medium">マッチング機能</p>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-sm font-medium text-[#F0F0F0]">マッチング機能</p>
+            <p className="text-xs text-[#8892A8]">
               ONにすると他のユーザーとマッチングできます
             </p>
           </div>
@@ -242,7 +240,7 @@ export default function ProfileEditPage() {
             aria-checked={matchingOptIn}
             onClick={() => setMatchingOptIn(!matchingOptIn)}
             className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full transition-colors ${
-              matchingOptIn ? "bg-blue-600" : "bg-gray-300"
+              matchingOptIn ? "bg-[#00D4FF]" : "bg-[#1E2640]"
             }`}
           >
             <span
@@ -253,12 +251,16 @@ export default function ProfileEditPage() {
           </button>
         </div>
 
-        {error && <p className="text-sm text-red-600">{error}</p>}
+        {error && (
+          <p className="rounded-lg bg-[#FF3B8B]/10 px-3 py-2 text-sm text-[#FF3B8B]">
+            {error}
+          </p>
+        )}
 
         <button
           type="submit"
           disabled={saving}
-          className="rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
+          className="mt-2 rounded-xl bg-gradient-to-r from-[#00D4FF] to-[#7B61FF] px-4 py-3 text-sm font-bold text-[#0A0E1A] transition hover:opacity-90 disabled:opacity-50"
         >
           {saving ? "保存中..." : "保存する"}
         </button>

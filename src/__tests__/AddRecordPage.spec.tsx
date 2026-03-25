@@ -43,7 +43,7 @@ describe("AddRecordPage", () => {
   it("「← 一覧に戻る」リンクが/recordsを指している", () => {
     renderAddPage();
 
-    const backLink = screen.getByText("← 一覧に戻る");
+    const backLink = screen.getByText("一覧に戻る");
     expect(backLink.closest("a")).toHaveAttribute("href", "/records");
   });
 

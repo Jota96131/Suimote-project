@@ -13,7 +13,7 @@ export default function PrivateRoute({ children }: { children: React.ReactNode }
   }
 
   if (!user) {
-    return <Navigate to="/auth" replace />;
+    return <Navigate to="/" replace />;
   }
 
   return <>{children}</>;

@@ -41,28 +41,19 @@ beforeEach(() => {
 });
 
 describe("PracticeList", () => {
-  // ユニットテスト: ローディング表示（スケルトン）
-  it("読み込み中にスケルトンテーブルを表示する", () => {
+  it("読み込み中にスケルトンを表示する", () => {
     mockSupabase.from.mockReturnValue({
       select: jest.fn().mockReturnValue({
-        order: jest.fn(() => new Promise(() => {})), // 永遠にpending
+        order: jest.fn(() => new Promise(() => {})),
       }),
     } as any);
 
-    renderWithRouter();
-
-    // スケルトン表示中もテーブルヘッダーは表示されている
-    expect(screen.getByText("日付")).toBeInTheDocument();
-    expect(screen.getByText("距離 (m)")).toBeInTheDocument();
-    expect(screen.getByText("タイム")).toBeInTheDocument();
-    expect(screen.getByText("泳法")).toBeInTheDocument();
-    expect(screen.getByText("プール施設")).toBeInTheDocument();
-
-    // データ行は表示されていない
-    expect(screen.queryByText("練習記録一覧")).not.toBeInTheDocument();
+    const { container } = renderWithRouter();
+    // スケルトンのカードが表示されている
+    const skeletons = container.querySelectorAll(".rounded-2xl");
+    expect(skeletons.length).toBeGreaterThan(0);
   });
 
-  // ユニットテスト: 練習記録なし
   it("記録が空の場合「練習記録がありません」を表示する", async () => {
     mockSupabase.from.mockReturnValue({
       select: jest.fn().mockReturnValue({
@@ -79,7 +70,6 @@ describe("PracticeList", () => {
     ).toBeInTheDocument();
   });
 
-  // ユニットテスト: エラー表示
   it("エラーが発生した場合エラーメッセージを表示する", async () => {
     mockSupabase.from.mockReturnValue({
       select: jest.fn().mockReturnValue({
@@ -97,7 +87,6 @@ describe("PracticeList", () => {
     });
   });
 
-  // 結合テスト: 練習記録一覧の表示
   it("練習記録が正しく一覧表示される", async () => {
     mockSupabase.from.mockReturnValue({
       select: jest.fn().mockReturnValue({
@@ -108,30 +97,19 @@ describe("PracticeList", () => {
     renderWithRouter();
 
     await waitFor(() => {
-      expect(screen.getByText("練習記録一覧")).toBeInTheDocument();
+      expect(screen.getByText("クロール")).toBeInTheDocument();
     });
 
-    // テーブルヘッダーの確認
-    expect(screen.getByText("日付")).toBeInTheDocument();
-    expect(screen.getByText("距離 (m)")).toBeInTheDocument();
-    expect(screen.getByText("タイム")).toBeInTheDocument();
-    expect(screen.getByText("泳法")).toBeInTheDocument();
-    expect(screen.getByText("プール施設")).toBeInTheDocument();
-
-    // 1件目のデータ確認
     expect(screen.getByText("2024-01-15")).toBeInTheDocument();
-    expect(screen.getByText("1000")).toBeInTheDocument();
-    expect(screen.getByText("クロール")).toBeInTheDocument();
+    expect(screen.getByText("1000m")).toBeInTheDocument();
     expect(screen.getByText("市民プール")).toBeInTheDocument();
 
-    // 2件目のデータ確認
     expect(screen.getByText("2024-01-10")).toBeInTheDocument();
-    expect(screen.getByText("500")).toBeInTheDocument();
+    expect(screen.getByText("500m")).toBeInTheDocument();
     expect(screen.getByText("平泳ぎ")).toBeInTheDocument();
     expect(screen.getByText("スポーツセンター")).toBeInTheDocument();
   });
 
-  // 結合テスト: Supabaseが正しいクエリで呼ばれるか
   it("Supabaseのpractice_recordsテーブルを日付降順でfetchする", async () => {
     const mockOrder = jest.fn().mockResolvedValue({ data: [], error: null });
     const mockSelect = jest.fn().mockReturnValue({ order: mockOrder });

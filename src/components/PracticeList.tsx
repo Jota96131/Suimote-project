@@ -9,25 +9,20 @@ export default function PracticeList() {
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center">
-        <p className="text-lg font-medium text-destructive">エラーが発生しました</p>
-        <p className="mt-1 text-sm text-muted-foreground">{error}</p>
+        <p className="text-lg font-medium text-[#FF3B8B]">エラーが発生しました</p>
+        <p className="mt-1 text-sm text-[#8892A8]">{error}</p>
       </div>
     );
   }
 
   if (records.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-16 text-center text-muted-foreground">
-        <p className="text-lg font-medium">練習記録がありません</p>
-        <p className="mt-1 text-sm">記録を追加すると、ここに表示されます。</p>
+      <div className="flex flex-col items-center justify-center py-16 text-center">
+        <p className="text-lg font-medium text-[#8892A8]">練習記録がありません</p>
+        <p className="mt-1 text-sm text-[#8892A8]">記録を追加すると、ここに表示されます。</p>
       </div>
     );
   }
 
-  return (
-    <div>
-      <h2>練習記録一覧</h2>
-      <PracticeRecordTable records={records} />
-    </div>
-  );
+  return <PracticeRecordTable records={records} />;
 }

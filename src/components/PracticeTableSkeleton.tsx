@@ -2,30 +2,19 @@ import { Skeleton } from "./ui/skeleton";
 
 export default function PracticeTableSkeleton() {
   return (
-    <div>
-      <Skeleton className="mb-4 h-7 w-40" />
-      <table className="w-full">
-        <thead>
-          <tr>
-            <th>日付</th>
-            <th>距離 (m)</th>
-            <th>タイム</th>
-            <th>泳法</th>
-            <th>プール施設</th>
-          </tr>
-        </thead>
-        <tbody>
-          {Array.from({ length: 5 }).map((_, i) => (
-            <tr key={i}>
-              <td><Skeleton className="h-4 w-24" /></td>
-              <td><Skeleton className="h-4 w-16" /></td>
-              <td><Skeleton className="h-4 w-20" /></td>
-              <td><Skeleton className="h-4 w-16" /></td>
-              <td><Skeleton className="h-4 w-28" /></td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="flex flex-col gap-3">
+      {Array.from({ length: 5 }).map((_, i) => (
+        <div
+          key={i}
+          className="flex items-center gap-4 rounded-2xl border border-[#1E2640] bg-[#131829] p-4"
+        >
+          <Skeleton className="h-11 w-11 rounded-full" />
+          <div className="flex-1">
+            <Skeleton className="h-4 w-32" />
+            <Skeleton className="mt-2 h-3 w-48" />
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

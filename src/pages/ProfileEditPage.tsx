@@ -4,6 +4,7 @@ import { User, ArrowLeft } from "lucide-react";
 import { supabase } from "../supabase";
 import { useMyProfile } from "../hooks/useMyProfile";
 import { useAuth } from "../hooks/useAuth";
+import { resizeImage } from "../utils/resizeImage";
 
 const inputClass =
   "rounded-xl border border-[#1E2640] bg-[#0A0E1A] px-4 py-3 text-sm text-[#F0F0F0] placeholder-[#8892A8] outline-none focus:border-[#00D4FF] transition";
@@ -24,11 +25,16 @@ export default function ProfileEditPage() {
   const [error, setError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
-  function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
+  async function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
-    setAvatarFile(file);
-    setAvatarPreview(URL.createObjectURL(file));
+    try {
+      const resized = await resizeImage(file);
+      setAvatarFile(resized);
+      setAvatarPreview(URL.createObjectURL(resized));
+    } catch {
+      setError("画像の処理に失敗しました");
+    }
   }
 
   async function handleSubmit(e: React.FormEvent) {

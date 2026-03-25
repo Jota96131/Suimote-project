@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { User, Pencil, LogOut } from "lucide-react";
 import { useMyProfile } from "../hooks/useMyProfile";
 import { useMyStats } from "../hooks/useMyStats";
@@ -7,6 +7,7 @@ import { useAuth } from "../hooks/useAuth";
 import SwimBadge from "../components/SwimBadge";
 
 export default function ProfilePage() {
+  const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const { profile, loading, error, updateProfile } = useMyProfile();
   const { stats, loading: statsLoading } = useMyStats();
@@ -152,7 +153,7 @@ export default function ProfilePage() {
           編集する
         </Link>
         <button
-          onClick={() => signOut()}
+          onClick={async () => { await signOut(); navigate("/"); }}
           className="flex items-center justify-center gap-2 rounded-xl border border-[#1E2640] px-4 py-3 text-sm text-[#8892A8] transition hover:border-[#FF3B8B]/50 hover:text-[#FF3B8B]"
         >
           <LogOut className="h-4 w-4" />

@@ -20,7 +20,7 @@ export function useUserProfile(userId: string | undefined) {
         .from("profiles")
         .select("*, areas(id, name)")
         .eq("user_id", userId!)
-        .single();
+        .maybeSingle();
 
       if (profileRes.error || !profileRes.data) {
         // プロフィールが見つからない = 非公開 or 存在しない

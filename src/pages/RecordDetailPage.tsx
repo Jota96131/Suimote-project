@@ -1,11 +1,16 @@
-import { Link, useParams } from "react-router-dom";
-import { ArrowLeft, Calendar, Ruler, Timer, Waves, MapPin, FileText } from "lucide-react";
+import { useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { ArrowLeft, Calendar, Ruler, Timer, Waves, MapPin, FileText, Trash2 } from "lucide-react";
 import { useRecordDetail } from "../hooks/useRecordDetail";
+import { useDeleteRecord } from "../hooks/useDeleteRecord";
 import { formatTime } from "../utils/formatTime";
 
 export default function RecordDetailPage() {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const { record, loading, error } = useRecordDetail(id ?? "");
+  const { deleteRecord, loading: deleting, error: deleteError } = useDeleteRecord();
+  const [showConfirm, setShowConfirm] = useState(false);
 
   if (loading) {
     return (
@@ -72,6 +77,40 @@ export default function RecordDetailPage() {
           </div>
         ))}
       </div>
+
+      {deleteError && (
+        <p className="mt-4 text-sm text-[#FF3B8B]">{deleteError}</p>
+      )}
+
+      {!showConfirm ? (
+        <button
+          onClick={() => setShowConfirm(true)}
+          className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border border-[#FF3B8B]/30 bg-[#FF3B8B]/10 px-4 py-3 text-sm font-bold text-[#FF3B8B] transition hover:bg-[#FF3B8B]/20"
+        >
+          <Trash2 className="h-4 w-4" />
+          この記録を削除
+        </button>
+      ) : (
+        <div className="mt-6 flex flex-col gap-3 rounded-2xl border border-[#FF3B8B]/30 bg-[#131829] p-4">
+          <p className="text-sm text-[#F0F0F0]">本当にこの記録を削除しますか？</p>
+          <div className="flex gap-3">
+            <button
+              onClick={() => setShowConfirm(false)}
+              disabled={deleting}
+              className="flex-1 rounded-xl border border-[#1E2640] bg-[#0A0E1A] px-4 py-2 text-sm text-[#8892A8] transition hover:border-[#8892A8]"
+            >
+              キャンセル
+            </button>
+            <button
+              onClick={() => deleteRecord(id!, () => navigate("/records"))}
+              disabled={deleting}
+              className="flex-1 rounded-xl bg-[#FF3B8B] px-4 py-2 text-sm font-bold text-white transition hover:opacity-90 disabled:opacity-50"
+            >
+              {deleting ? "削除中..." : "削除する"}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

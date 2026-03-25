@@ -1,4 +1,5 @@
 import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import RecordDetailPage from "../pages/RecordDetailPage";
 import { supabase } from "../supabase";
@@ -161,6 +162,106 @@ describe("RecordDetailPage", () => {
 
     await waitFor(() => {
       expect(mockEq).toHaveBeenCalledWith("id", "abc-123");
+    });
+  });
+
+  // 削除ボタンの表示
+  it("詳細表示時に「この記録を削除」ボタンを表示する", async () => {
+    mockSupabase.from.mockReturnValue({
+      select: jest.fn().mockReturnValue({
+        eq: jest.fn().mockReturnValue({
+          single: jest.fn().mockResolvedValue({ data: mockRecord, error: null }),
+        }),
+      }),
+    } as any);
+
+    renderDetailPage();
+
+    await waitFor(() => {
+      expect(screen.getByText("この記録を削除")).toBeInTheDocument();
+    });
+  });
+
+  // 削除ボタンクリックで確認ダイアログ表示
+  it("「この記録を削除」クリックで確認ダイアログを表示する", async () => {
+    const user = userEvent.setup();
+    mockSupabase.from.mockReturnValue({
+      select: jest.fn().mockReturnValue({
+        eq: jest.fn().mockReturnValue({
+          single: jest.fn().mockResolvedValue({ data: mockRecord, error: null }),
+        }),
+      }),
+    } as any);
+
+    renderDetailPage();
+
+    await waitFor(() => {
+      expect(screen.getByText("この記録を削除")).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByText("この記録を削除"));
+
+    expect(screen.getByText("本当にこの記録を削除しますか？")).toBeInTheDocument();
+    expect(screen.getByText("キャンセル")).toBeInTheDocument();
+    expect(screen.getByText("削除する")).toBeInTheDocument();
+  });
+
+  // キャンセルで確認ダイアログを閉じる
+  it("キャンセルクリックで確認ダイアログを閉じる", async () => {
+    const user = userEvent.setup();
+    mockSupabase.from.mockReturnValue({
+      select: jest.fn().mockReturnValue({
+        eq: jest.fn().mockReturnValue({
+          single: jest.fn().mockResolvedValue({ data: mockRecord, error: null }),
+        }),
+      }),
+    } as any);
+
+    renderDetailPage();
+
+    await waitFor(() => {
+      expect(screen.getByText("この記録を削除")).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByText("この記録を削除"));
+    expect(screen.getByText("本当にこの記録を削除しますか？")).toBeInTheDocument();
+
+    await user.click(screen.getByText("キャンセル"));
+    expect(screen.queryByText("本当にこの記録を削除しますか？")).not.toBeInTheDocument();
+    expect(screen.getByText("この記録を削除")).toBeInTheDocument();
+  });
+
+  // 削除成功で一覧ページに遷移
+  it("削除成功時に一覧ページに遷移する", async () => {
+    const user = userEvent.setup();
+    const mockDeleteEq = jest.fn().mockResolvedValue({ error: null });
+    const mockDeleteFn = jest.fn().mockReturnValue({ eq: mockDeleteEq });
+
+    mockSupabase.from.mockImplementation((table: string) => {
+      if (table === "practice_records") {
+        return {
+          select: jest.fn().mockReturnValue({
+            eq: jest.fn().mockReturnValue({
+              single: jest.fn().mockResolvedValue({ data: mockRecord, error: null }),
+            }),
+          }),
+          delete: mockDeleteFn,
+        } as any;
+      }
+      return {} as any;
+    });
+
+    renderDetailPage();
+
+    await waitFor(() => {
+      expect(screen.getByText("この記録を削除")).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByText("この記録を削除"));
+    await user.click(screen.getByText("削除する"));
+
+    await waitFor(() => {
+      expect(screen.getByText("一覧ページ")).toBeInTheDocument();
     });
   });
 });

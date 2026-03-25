@@ -95,18 +95,18 @@ export default function RecordDetailPage() {
           <p className="text-sm text-[#F0F0F0]">本当にこの記録を削除しますか？</p>
           <div className="flex gap-3">
             <button
-              onClick={() => setShowConfirm(false)}
-              disabled={deleting}
-              className="flex-1 rounded-xl border border-[#1E2640] bg-[#0A0E1A] px-4 py-2 text-sm text-[#8892A8] transition hover:border-[#8892A8]"
-            >
-              キャンセル
-            </button>
-            <button
               onClick={() => deleteRecord(id!, () => navigate("/records"))}
               disabled={deleting}
               className="flex-1 rounded-xl bg-[#FF3B8B] px-4 py-2 text-sm font-bold text-white transition hover:opacity-90 disabled:opacity-50"
             >
               {deleting ? "削除中..." : "削除する"}
+            </button>
+            <button
+              onClick={() => setShowConfirm(false)}
+              disabled={deleting}
+              className="flex-1 rounded-xl border border-[#1E2640] bg-[#0A0E1A] px-4 py-2 text-sm text-[#8892A8] transition hover:border-[#8892A8]"
+            >
+              キャンセル
             </button>
           </div>
         </div>

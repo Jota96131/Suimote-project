@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { useRecordDetail } from "../hooks/useRecordDetail";
@@ -16,13 +16,15 @@ export default function EditRecordPage() {
   const { record, loading: fetching, error: fetchError } = useRecordDetail(id ?? "");
   const { loading, error, updateRecord } = useEditRecord(id ?? "");
 
+  const initialForm = useMemo(
+    () => (record ? recordToForm(record) : null),
+    [record]
+  );
   const [form, setForm] = useState<EditRecordForm | null>(null);
 
-  useEffect(() => {
-    if (record && !form) {
-      setForm(recordToForm(record));
-    }
-  }, [record, form]);
+  if (initialForm && !form) {
+    setForm(initialForm);
+  }
 
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>

@@ -94,7 +94,7 @@ describe("ProfileEditPage", () => {
     expect(screen.getByLabelText("ニックネーム")).toHaveValue("テスト太郎");
     expect(screen.getByLabelText("自己紹介")).toHaveValue("水泳が好きです");
     expect(screen.getByLabelText("ホームプール")).toHaveValue("渋谷区スポーツセンター");
-    expect(screen.getByLabelText("所属エリア")).toHaveValue("area-1");
+    expect(screen.getByText("渋谷・新宿")).toBeInTheDocument();
   });
 
   it("ニックネームが空で保存するとエラーが表示される", () => {

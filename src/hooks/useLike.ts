@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { supabase } from "../supabase";
 import { useAuth } from "./useAuth";
 import type { Like } from "../types";
@@ -8,6 +8,7 @@ export function useLike() {
   const [likedUserIds, setLikedUserIds] = useState<Set<string>>(new Set());
   const [matchedUserIds, setMatchedUserIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
+  const receivedIdsRef = useRef<Set<string>>(new Set());
 
   // 自分が送った/もらったいいね一覧を取得してマッチ判定
   useEffect(() => {
@@ -45,6 +46,7 @@ export function useLike() {
         if (receivedIds.has(id)) matched.add(id);
       });
 
+      receivedIdsRef.current = receivedIds;
       setLikedUserIds(sentIds);
       setMatchedUserIds(matched);
       setLoading(false);
@@ -62,8 +64,14 @@ export function useLike() {
     async (toUserId: string): Promise<boolean> => {
       if (!user) return false;
 
+      // クライアント側で即マッチ判定（相手が既にいいね済みか）
+      const isMutual = receivedIdsRef.current.has(toUserId);
+
       // 楽観的UI更新
       setLikedUserIds((prev) => new Set(prev).add(toUserId));
+      if (isMutual) {
+        setMatchedUserIds((prev) => new Set(prev).add(toUserId));
+      }
 
       const { error } = await supabase
         .from("likes")
@@ -75,19 +83,17 @@ export function useLike() {
           next.delete(toUserId);
           return next;
         });
+        if (isMutual) {
+          setMatchedUserIds((prev) => {
+            const next = new Set(prev);
+            next.delete(toUserId);
+            return next;
+          });
+        }
         return false;
       }
 
-      // 相互いいね判定
-      const { data: isMutual } = await supabase.rpc("check_mutual_like", {
-        target_user_id: toUserId,
-      });
-
-      if (isMutual) {
-        setMatchedUserIds((prev) => new Set(prev).add(toUserId));
-      }
-
-      return isMutual as boolean;
+      return isMutual;
     },
     [user]
   );
@@ -131,5 +137,10 @@ export function useLike() {
     [matchedUserIds]
   );
 
-  return { isLiked, isMatched, sendLike, removeLike, loading };
+  const isReceivedLike = useCallback(
+    (fromUserId: string) => receivedIdsRef.current.has(fromUserId),
+    []
+  );
+
+  return { isLiked, isMatched, isReceivedLike, sendLike, removeLike, loading };
 }

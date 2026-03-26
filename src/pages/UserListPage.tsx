@@ -9,7 +9,7 @@ import SwimBadge from "../components/SwimBadge";
 export default function UserListPage() {
   const { profile } = useMyProfile();
   const { users, loading, error } = useAreaUsers();
-  const { isLiked, isMatched, sendLike, removeLike } = useLike();
+  const { isLiked, isMatched, isReceivedLike, sendLike, removeLike } = useLike();
   const [matchedUser, setMatchedUser] = useState<ProfileWithStats | null>(null);
 
   if (loading) {
@@ -178,11 +178,11 @@ export default function UserListPage() {
                     if (isLiked(u.user_id)) {
                       removeLike(u.user_id);
                     } else {
-                      sendLike(u.user_id).then((matched) => {
-                        if (matched) {
-                          setMatchedUser(u);
-                        }
-                      });
+                      // 相手が既にいいね済みなら即マッチ表示
+                      if (isReceivedLike(u.user_id)) {
+                        setMatchedUser(u);
+                      }
+                      sendLike(u.user_id);
                     }
                   }}
                   className={`mt-3 flex w-full items-center justify-center gap-1 rounded-xl border py-2 text-sm font-medium transition ${

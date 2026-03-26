@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { User, ArrowLeft } from "lucide-react";
 import { supabase } from "../supabase";
@@ -6,36 +6,57 @@ import { useMyProfile } from "../hooks/useMyProfile";
 import { useAuth } from "../hooks/useAuth";
 import { resizeImage } from "../utils/resizeImage";
 import AreaDropdown from "../components/AreaDropdown";
+import type { Profile, Area } from "../types";
 
 const inputClass =
   "rounded-xl border border-[#1E2640] bg-[#0A0E1A] px-4 py-3 text-sm text-[#F0F0F0] placeholder-[#8892A8] outline-none focus:border-[#00D4FF] transition";
 
 export default function ProfileEditPage() {
-  const navigate = useNavigate();
   const { user } = useAuth();
   const { profile, areas, loading, error: fetchError } = useMyProfile();
 
-  const [nickname, setNickname] = useState("");
-  const [bio, setBio] = useState("");
-  const [homePool, setHomePool] = useState("");
-  const [areaId, setAreaId] = useState("");
-  const [matchingOptIn, setMatchingOptIn] = useState(false);
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-16">
+        <p className="text-[#8892A8]">読み込み中...</p>
+      </div>
+    );
+  }
+
+  if (fetchError) {
+    return (
+      <div className="flex flex-col items-center justify-center py-16 text-center">
+        <p className="text-lg font-medium text-[#FF3B8B]">エラーが発生しました</p>
+        <p className="mt-1 text-sm text-[#8892A8]">{fetchError}</p>
+        <Link to="/profile" className="mt-4 text-sm text-[#00D4FF]">
+          プロフィールに戻る
+        </Link>
+      </div>
+    );
+  }
+
+  return <ProfileEditForm user={user} profile={profile} areas={areas} />;
+}
+
+type FormProps = {
+  user: { id: string } | null;
+  profile: Profile | null;
+  areas: Area[];
+};
+
+function ProfileEditForm({ user, profile, areas }: FormProps) {
+  const navigate = useNavigate();
+
+  const [nickname, setNickname] = useState(profile?.nickname ?? "");
+  const [bio, setBio] = useState(profile?.bio ?? "");
+  const [homePool, setHomePool] = useState(profile?.home_pool ?? "");
+  const [areaId, setAreaId] = useState(profile?.area_id ?? "");
+  const [matchingOptIn, setMatchingOptIn] = useState(profile?.matching_opt_in ?? false);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
-  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(profile?.avatar_url ?? null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
-
-  useEffect(() => {
-    if (profile) {
-      setNickname(profile.nickname ?? "");
-      setBio(profile.bio ?? "");
-      setHomePool(profile.home_pool ?? "");
-      setAreaId(profile.area_id ?? "");
-      setMatchingOptIn(profile.matching_opt_in ?? false);
-      setAvatarPreview(profile.avatar_url ?? null);
-    }
-  }, [profile]);
 
   async function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -113,26 +134,6 @@ export default function ProfileEditPage() {
       setError("保存に失敗しました");
       setSaving(false);
     }
-  }
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-16">
-        <p className="text-[#8892A8]">読み込み中...</p>
-      </div>
-    );
-  }
-
-  if (fetchError) {
-    return (
-      <div className="flex flex-col items-center justify-center py-16 text-center">
-        <p className="text-lg font-medium text-[#FF3B8B]">エラーが発生しました</p>
-        <p className="mt-1 text-sm text-[#8892A8]">{fetchError}</p>
-        <Link to="/profile" className="mt-4 text-sm text-[#00D4FF]">
-          プロフィールに戻る
-        </Link>
-      </div>
-    );
   }
 
   return (

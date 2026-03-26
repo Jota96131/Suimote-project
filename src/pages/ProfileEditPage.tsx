@@ -219,6 +219,7 @@ function ProfileEditForm({ user, profile, areas }: FormProps) {
           <input
             id="homePool"
             type="text"
+            autoComplete="off"
             value={homePool}
             onChange={(e) => setHomePool(e.target.value)}
             className={inputClass}

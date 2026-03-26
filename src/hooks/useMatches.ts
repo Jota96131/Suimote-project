@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { supabase } from "../supabase";
 import { useAuth } from "./useAuth";
 import type { Profile } from "../types";
@@ -52,5 +52,27 @@ export function useMatches() {
     };
   }, [user]);
 
-  return { matches, loading, error };
+  const removeMatch = useCallback(
+    async (targetUserId: string) => {
+      if (!user) return;
+
+      // 楽観的UI更新: リストから即削除
+      setMatches((prev) => prev.filter((m) => m.user_id !== targetUserId));
+
+      // 自分のいいねを削除 → 相互いいねが崩れてマッチ解除
+      const { error: err } = await supabase
+        .from("likes")
+        .delete()
+        .eq("from_user_id", user.id)
+        .eq("to_user_id", targetUserId);
+
+      if (err) {
+        // 失敗時はリロードで復元
+        setError("マッチ解除に失敗しました");
+      }
+    },
+    [user]
+  );
+
+  return { matches, loading, error, removeMatch };
 }

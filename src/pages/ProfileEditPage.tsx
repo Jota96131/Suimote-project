@@ -5,6 +5,7 @@ import { supabase } from "../supabase";
 import { useMyProfile } from "../hooks/useMyProfile";
 import { useAuth } from "../hooks/useAuth";
 import { resizeImage } from "../utils/resizeImage";
+import AreaDropdown from "../components/AreaDropdown";
 
 const inputClass =
   "rounded-xl border border-[#1E2640] bg-[#0A0E1A] px-4 py-3 text-sm text-[#F0F0F0] placeholder-[#8892A8] outline-none focus:border-[#00D4FF] transition";
@@ -225,22 +226,15 @@ export default function ProfileEditPage() {
 
         {/* エリア */}
         <div className="flex flex-col gap-1">
-          <label htmlFor="areaId" className="text-sm font-medium text-[#8892A8]">
+          <label className="text-sm font-medium text-[#8892A8]">
             所属エリア
           </label>
-          <select
-            id="areaId"
+          <AreaDropdown
+            areas={areas}
             value={areaId}
-            onChange={(e) => setAreaId(e.target.value)}
+            onChange={setAreaId}
             className={inputClass}
-          >
-            <option value="">未選択</option>
-            {areas.map((area) => (
-              <option key={area.id} value={area.id}>
-                {area.name}
-              </option>
-            ))}
-          </select>
+          />
         </div>
 
         {/* マッチング機能 */}

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState } from "react";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 
 type Props = {
@@ -34,15 +34,7 @@ export default function CalendarModal({ open, value, onSelect, onClose }: Props)
   const [viewYear, setViewYear] = useState(parsed.getFullYear());
   const [viewMonth, setViewMonth] = useState(parsed.getMonth());
 
-  useEffect(() => {
-    if (open && value) {
-      const d = new Date(value);
-      setViewYear(d.getFullYear());
-      setViewMonth(d.getMonth());
-    }
-  }, [open, value]);
-
-  const prevMonth = useCallback(() => {
+  function prevMonth() {
     setViewMonth((m) => {
       if (m === 0) {
         setViewYear((y) => y - 1);
@@ -50,9 +42,9 @@ export default function CalendarModal({ open, value, onSelect, onClose }: Props)
       }
       return m - 1;
     });
-  }, []);
+  }
 
-  const nextMonth = useCallback(() => {
+  function nextMonth() {
     setViewMonth((m) => {
       if (m === 11) {
         setViewYear((y) => y + 1);
@@ -60,7 +52,7 @@ export default function CalendarModal({ open, value, onSelect, onClose }: Props)
       }
       return m + 1;
     });
-  }, []);
+  }
 
   if (!open) return null;
 

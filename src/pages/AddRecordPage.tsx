@@ -38,6 +38,7 @@ export default function AddRecordPage() {
             <Calendar className="h-4 w-4 text-[#8892A8]" />
           </button>
           <CalendarModal
+            key={String(calendarOpen)}
             open={calendarOpen}
             value={form.date}
             onSelect={(date) => handleChange({ target: { name: "date", value: date } } as React.ChangeEvent<HTMLInputElement>)}

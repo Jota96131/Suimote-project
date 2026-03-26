@@ -1,9 +1,10 @@
 import { useState, useMemo } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Calendar } from "lucide-react";
 import { useRecordDetail } from "../hooks/useRecordDetail";
 import { useEditRecord, recordToForm } from "../hooks/useEditRecord";
 import type { EditRecordForm } from "../hooks/useEditRecord";
+import CalendarModal from "../components/CalendarModal";
 
 const STROKES = ["クロール", "平泳ぎ", "背泳ぎ", "バタフライ", "個人メドレー"] as const;
 
@@ -21,6 +22,7 @@ export default function EditRecordPage() {
     [record]
   );
   const [form, setForm] = useState<EditRecordForm | null>(null);
+  const [calendarOpen, setCalendarOpen] = useState(false);
 
   if (initialForm && !form) {
     setForm(initialForm);
@@ -70,17 +72,20 @@ export default function EditRecordPage() {
 
       <form onSubmit={onSubmit} className="mt-6 flex flex-col gap-4">
         <div className="flex flex-col gap-1">
-          <label htmlFor="date" className="text-sm font-medium text-[#8892A8]">
-            日付
-          </label>
-          <input
-            id="date"
-            type="date"
-            name="date"
+          <label className="text-sm font-medium text-[#8892A8]">日付</label>
+          <button
+            type="button"
+            onClick={() => setCalendarOpen(true)}
+            className={`${inputClass} flex items-center justify-between text-left`}
+          >
+            <span>{form.date || "日付を選択"}</span>
+            <Calendar className="h-4 w-4 text-[#8892A8]" />
+          </button>
+          <CalendarModal
+            open={calendarOpen}
             value={form.date}
-            onChange={handleChange}
-            required
-            className={inputClass}
+            onSelect={(date) => handleChange({ target: { name: "date", value: date } } as React.ChangeEvent<HTMLInputElement>)}
+            onClose={() => setCalendarOpen(false)}
           />
         </div>
 

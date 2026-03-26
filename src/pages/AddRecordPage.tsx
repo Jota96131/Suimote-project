@@ -3,8 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { ArrowLeft, Calendar } from "lucide-react";
 import { useAddRecord } from "../hooks/useAddRecord";
 import CalendarModal from "../components/CalendarModal";
-
-const STROKES = ["クロール", "平泳ぎ", "背泳ぎ", "バタフライ", "個人メドレー"] as const;
+import StrokeDropdown from "../components/StrokeDropdown";
 
 const inputClass =
   "rounded-xl border border-[#1E2640] bg-[#0A0E1A] px-4 py-3 text-sm text-[#F0F0F0] placeholder-[#8892A8] outline-none focus:border-[#00D4FF] transition";
@@ -80,22 +79,12 @@ export default function AddRecordPage() {
         </div>
 
         <div className="flex flex-col gap-1">
-          <label htmlFor="stroke" className="text-sm font-medium text-[#8892A8]">
-            泳法
-          </label>
-          <select
-            id="stroke"
-            name="stroke"
+          <label className="text-sm font-medium text-[#8892A8]">泳法</label>
+          <StrokeDropdown
             value={form.stroke}
-            onChange={handleChange}
+            onChange={(s) => handleChange({ target: { name: "stroke", value: s } } as React.ChangeEvent<HTMLSelectElement>)}
             className={inputClass}
-          >
-            {STROKES.map((s) => (
-              <option key={s} value={s}>
-                {s}
-              </option>
-            ))}
-          </select>
+          />
         </div>
 
         <div className="flex flex-col gap-1">

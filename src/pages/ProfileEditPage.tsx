@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { User, ArrowLeft } from "lucide-react";
 import { supabase } from "../supabase";
@@ -14,16 +14,27 @@ export default function ProfileEditPage() {
   const { user } = useAuth();
   const { profile, areas, loading, error: fetchError } = useMyProfile();
 
-  const [nickname, setNickname] = useState(profile?.nickname ?? "");
-  const [bio, setBio] = useState(profile?.bio ?? "");
-  const [homePool, setHomePool] = useState(profile?.home_pool ?? "");
-  const [areaId, setAreaId] = useState(profile?.area_id ?? "");
-  const [matchingOptIn, setMatchingOptIn] = useState(profile?.matching_opt_in ?? false);
+  const [nickname, setNickname] = useState("");
+  const [bio, setBio] = useState("");
+  const [homePool, setHomePool] = useState("");
+  const [areaId, setAreaId] = useState("");
+  const [matchingOptIn, setMatchingOptIn] = useState(false);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
-  const [avatarPreview, setAvatarPreview] = useState<string | null>(profile?.avatar_url ?? null);
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    if (profile) {
+      setNickname(profile.nickname ?? "");
+      setBio(profile.bio ?? "");
+      setHomePool(profile.home_pool ?? "");
+      setAreaId(profile.area_id ?? "");
+      setMatchingOptIn(profile.matching_opt_in ?? false);
+      setAvatarPreview(profile.avatar_url ?? null);
+    }
+  }, [profile]);
 
   async function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];

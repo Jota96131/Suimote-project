@@ -178,6 +178,7 @@ function ProfileEditForm({ user, profile, areas }: FormProps) {
           <input
             id="nickname"
             type="text"
+            autoComplete="off"
             value={nickname}
             onChange={(e) => setNickname(e.target.value)}
             required

@@ -44,7 +44,7 @@ graph TD
     subgraph Frontend["⚛️ フロントエンド"]
         React["React 19 + TypeScript"]
         UI["Tailwind CSS / shadcn/ui"]
-        Test["Jest + RTL（135テスト）"]
+        Test["Jest + RTL（173テスト）"]
     end
 
     Frontend -->|API| Supabase
@@ -157,7 +157,7 @@ graph TD
 
 ### テストは最強の味方
 
-全機能に対して135のテストを書いた。MVP6の全体動作確認で `npm test` を実行したら、**4秒で135項目がすべてPASS**。
+全機能に対して173のテストを書いた。MVP6の全体動作確認で `npm test` を実行したら、**4秒で173項目がすべてPASS**。
 
 手動だと30分以上かかる確認が、コマンド1つで完了。コードを変更するたびに「壊れてないか」を一瞬で検証できるのは、テストを書いてきたからこそ。
 

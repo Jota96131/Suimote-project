@@ -21,12 +21,10 @@ export function useAreaUsers() {
       setLoading(true);
       setError(null);
 
-      const { data, error: err } = await supabase
-        .from("profiles")
-        .select("*, areas(id, name)")
-        .eq("area_id", profile!.area_id!)
-        .eq("matching_opt_in", true)
-        .neq("user_id", user!.id);
+      const { data, error: err } = await supabase.rpc("get_area_users_with_stats", {
+        p_area_id: profile!.area_id!,
+        p_exclude_user_id: user!.id,
+      });
 
       if (err) {
         setError(err.message);
@@ -34,24 +32,8 @@ export function useAreaUsers() {
         return;
       }
 
-      const profiles = (data as Profile[]) ?? [];
-
-      // 各ユーザーの累計記録を取得
-      const withStats = await Promise.all(
-        profiles.map(async (p) => {
-          const [statsRes, monthlyRes] = await Promise.all([
-            supabase.rpc("get_user_stats", { target_user_id: p.user_id }),
-            supabase.rpc("get_monthly_practice_count", { target_user_id: p.user_id }),
-          ]);
-          return {
-            ...p,
-            stats: (statsRes.data as MyStats) ?? { total_distance: 0, total_count: 0 },
-            monthlyCount: (monthlyRes.data as number) ?? 0,
-          };
-        })
-      );
-
-      setUsers(withStats);
+      const result = (data as ProfileWithStats[]) ?? [];
+      setUsers(result);
       setLoading(false);
     }
 

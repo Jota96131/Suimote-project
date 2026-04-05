@@ -3,7 +3,7 @@ import PracticeRecordTable from "./PracticeRecordTable";
 import PracticeTableSkeleton from "./PracticeTableSkeleton";
 
 export default function PracticeList() {
-  const { records, loading, error } = usePracticeRecords();
+  const { records, loading, error, hasMore, loadMore } = usePracticeRecords();
 
   if (loading) return <PracticeTableSkeleton />;
   if (error) {
@@ -24,5 +24,20 @@ export default function PracticeList() {
     );
   }
 
-  return <PracticeRecordTable records={records} />;
+  return (
+    <>
+      <PracticeRecordTable records={records} />
+      {hasMore && (
+        <div className="flex justify-center py-4">
+          <button
+            onClick={loadMore}
+            disabled={loading}
+            className="rounded-lg bg-[#1A1A2E] px-6 py-2 text-sm text-white hover:bg-[#2A2A3E] disabled:opacity-50"
+          >
+            {loading ? "読み込み中..." : "もっと見る"}
+          </button>
+        </div>
+      )}
+    </>
+  );
 }

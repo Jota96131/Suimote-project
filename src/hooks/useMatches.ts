@@ -20,7 +20,7 @@ export function useMatches() {
       setLoading(true);
       setError(null);
 
-      const { data, error: err } = await supabase.rpc("get_matched_users");
+      const { data, error: err } = await supabase.rpc("get_matched_users_with_stats");
 
       if (ignore) return;
 
@@ -30,18 +30,7 @@ export function useMatches() {
         return;
       }
 
-      const profiles = (data as Profile[]) ?? [];
-
-      const withMonthly = await Promise.all(
-        profiles.map(async (p) => {
-          const { data: countData } = await supabase.rpc("get_monthly_practice_count", {
-            target_user_id: p.user_id,
-          });
-          return { ...p, monthlyCount: (countData as number) ?? 0 };
-        })
-      );
-
-      setMatches(withMonthly);
+      setMatches((data as MatchedProfile[]) ?? []);
       setLoading(false);
     }
 

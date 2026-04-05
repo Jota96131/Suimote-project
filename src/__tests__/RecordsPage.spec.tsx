@@ -5,6 +5,13 @@ import { supabase } from "../supabase";
 
 const mockSupabase = supabase as jest.Mocked<typeof supabase>;
 
+function mockFromPending() {
+  const mockRange = jest.fn(() => new Promise(() => {}));
+  const mockOrder = jest.fn().mockReturnValue({ range: mockRange });
+  const mockSelect = jest.fn().mockReturnValue({ order: mockOrder });
+  mockSupabase.from.mockReturnValue({ select: mockSelect } as any);
+}
+
 function renderRecordsPage() {
   return render(
     <MemoryRouter>
@@ -19,22 +26,14 @@ beforeEach(() => {
 
 describe("RecordsPage", () => {
   it("タイトル「練習記録」を表示する", () => {
-    mockSupabase.from.mockReturnValue({
-      select: jest.fn().mockReturnValue({
-        order: jest.fn(() => new Promise(() => {})),
-      }),
-    } as any);
+    mockFromPending();
 
     renderRecordsPage();
     expect(screen.getByText("練習記録")).toBeInTheDocument();
   });
 
   it("「追加」リンクが/records/newを指している", () => {
-    mockSupabase.from.mockReturnValue({
-      select: jest.fn().mockReturnValue({
-        order: jest.fn(() => new Promise(() => {})),
-      }),
-    } as any);
+    mockFromPending();
 
     renderRecordsPage();
     const link = screen.getByText("追加");
@@ -42,11 +41,7 @@ describe("RecordsPage", () => {
   });
 
   it("PracticeListコンポーネントを含む", () => {
-    mockSupabase.from.mockReturnValue({
-      select: jest.fn().mockReturnValue({
-        order: jest.fn(() => new Promise(() => {})),
-      }),
-    } as any);
+    mockFromPending();
 
     renderRecordsPage();
     // PracticeListはローディング表示をするはず

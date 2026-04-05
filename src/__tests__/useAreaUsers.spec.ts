@@ -38,15 +38,8 @@ beforeEach(() => {
 });
 
 describe("useAreaUsers", () => {
-  it("自分のuser_idを除外してクエリする（neqが呼ばれる）", async () => {
-    const mockNeq = jest.fn().mockResolvedValue({ data: [], error: null });
-    const mockEqMatchingOptIn = jest.fn().mockReturnValue({ neq: mockNeq });
-    const mockEqAreaId = jest.fn().mockReturnValue({ eq: mockEqMatchingOptIn });
-    const mockSelect = jest.fn().mockReturnValue({ eq: mockEqAreaId });
-
-    mockSupabase.from.mockReturnValue({ select: mockSelect } as any);
-    // rpcのモックも必要
-    mockSupabase.rpc = jest.fn() as any;
+  it("get_area_users_with_stats RPCが正しい引数で呼ばれる", async () => {
+    (mockSupabase.rpc as jest.Mock) = jest.fn().mockResolvedValue({ data: [], error: null });
 
     const { result } = renderHook(() => useAreaUsers());
 
@@ -54,9 +47,9 @@ describe("useAreaUsers", () => {
       expect(result.current.loading).toBe(false);
     });
 
-    expect(mockSupabase.from).toHaveBeenCalledWith("profiles");
-    expect(mockEqAreaId).toHaveBeenCalledWith("area_id", "area-1");
-    expect(mockEqMatchingOptIn).toHaveBeenCalledWith("matching_opt_in", true);
-    expect(mockNeq).toHaveBeenCalledWith("user_id", "user-1");
+    expect(mockSupabase.rpc).toHaveBeenCalledWith("get_area_users_with_stats", {
+      p_area_id: "area-1",
+      p_exclude_user_id: "user-1",
+    });
   });
 });

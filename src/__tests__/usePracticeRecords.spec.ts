@@ -25,6 +25,22 @@ const mockRecords = [
   },
 ];
 
+function mockFrom(resolvedValue: { data: any; error: any }) {
+  const mockRange = jest.fn().mockResolvedValue(resolvedValue);
+  const mockOrder = jest.fn().mockReturnValue({ range: mockRange });
+  const mockSelect = jest.fn().mockReturnValue({ order: mockOrder });
+  mockSupabase.from.mockReturnValue({ select: mockSelect } as any);
+  return { mockSelect, mockOrder, mockRange };
+}
+
+function mockFromPending() {
+  const mockRange = jest.fn(() => new Promise(() => {}));
+  const mockOrder = jest.fn().mockReturnValue({ range: mockRange });
+  const mockSelect = jest.fn().mockReturnValue({ order: mockOrder });
+  mockSupabase.from.mockReturnValue({ select: mockSelect } as any);
+  return { mockSelect, mockOrder, mockRange };
+}
+
 beforeEach(() => {
   jest.clearAllMocks();
 });
@@ -32,11 +48,7 @@ beforeEach(() => {
 describe("usePracticeRecords", () => {
   // ユニットテスト: 初期状態
   it("初期状態でloading=true, records=[], error=nullを返す", () => {
-    mockSupabase.from.mockReturnValue({
-      select: jest.fn().mockReturnValue({
-        order: jest.fn(() => new Promise(() => {})), // 永遠にpending
-      }),
-    } as any);
+    mockFromPending();
 
     const { result } = renderHook(() => usePracticeRecords());
 
@@ -47,11 +59,7 @@ describe("usePracticeRecords", () => {
 
   // ユニットテスト: データ取得成功
   it("データ取得成功後にrecordsにデータをセットしloading=falseになる", async () => {
-    mockSupabase.from.mockReturnValue({
-      select: jest.fn().mockReturnValue({
-        order: jest.fn().mockResolvedValue({ data: mockRecords, error: null }),
-      }),
-    } as any);
+    mockFrom({ data: mockRecords, error: null });
 
     const { result } = renderHook(() => usePracticeRecords());
 
@@ -65,11 +73,7 @@ describe("usePracticeRecords", () => {
 
   // ユニットテスト: 空のデータ
   it("データが空配列の場合records=[]でloading=falseになる", async () => {
-    mockSupabase.from.mockReturnValue({
-      select: jest.fn().mockReturnValue({
-        order: jest.fn().mockResolvedValue({ data: [], error: null }),
-      }),
-    } as any);
+    mockFrom({ data: [], error: null });
 
     const { result } = renderHook(() => usePracticeRecords());
 
@@ -83,14 +87,7 @@ describe("usePracticeRecords", () => {
 
   // ユニットテスト: エラー発生時
   it("エラー発生時にerrorにメッセージをセットしloading=falseになる", async () => {
-    mockSupabase.from.mockReturnValue({
-      select: jest.fn().mockReturnValue({
-        order: jest.fn().mockResolvedValue({
-          data: null,
-          error: { message: "ネットワークエラー" },
-        }),
-      }),
-    } as any);
+    mockFrom({ data: null, error: { message: "ネットワークエラー" } });
 
     const { result } = renderHook(() => usePracticeRecords());
 
@@ -104,11 +101,7 @@ describe("usePracticeRecords", () => {
 
   // ユニットテスト: nullデータをempty配列として扱う
   it("dataがnullの場合はrecords=[]になる（エラーなし）", async () => {
-    mockSupabase.from.mockReturnValue({
-      select: jest.fn().mockReturnValue({
-        order: jest.fn().mockResolvedValue({ data: null, error: null }),
-      }),
-    } as any);
+    mockFrom({ data: null, error: null });
 
     const { result } = renderHook(() => usePracticeRecords());
 
@@ -122,9 +115,7 @@ describe("usePracticeRecords", () => {
 
   // ユニットテスト: Supabaseクエリの検証
   it("practice_recordsテーブルを日付降順でクエリする", async () => {
-    const mockOrder = jest.fn().mockResolvedValue({ data: [], error: null });
-    const mockSelect = jest.fn().mockReturnValue({ order: mockOrder });
-    mockSupabase.from.mockReturnValue({ select: mockSelect } as any);
+    const { mockSelect, mockOrder, mockRange } = mockFrom({ data: [], error: null });
 
     renderHook(() => usePracticeRecords());
 
@@ -132,6 +123,20 @@ describe("usePracticeRecords", () => {
       expect(mockSupabase.from).toHaveBeenCalledWith("practice_records");
       expect(mockSelect).toHaveBeenCalledWith("*");
       expect(mockOrder).toHaveBeenCalledWith("date", { ascending: false });
+      expect(mockRange).toHaveBeenCalledWith(0, 19);
     });
+  });
+
+  // ユニットテスト: hasMoreの判定
+  it("取得件数がPAGE_SIZE未満ならhasMore=falseになる", async () => {
+    mockFrom({ data: mockRecords, error: null }); // 2件 < 20件
+
+    const { result } = renderHook(() => usePracticeRecords());
+
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    });
+
+    expect(result.current.hasMore).toBe(false);
   });
 });

@@ -28,6 +28,21 @@ const mockRecords = [
   },
 ];
 
+function mockFrom(resolvedValue: { data: any; error: any }) {
+  const mockRange = jest.fn().mockResolvedValue(resolvedValue);
+  const mockOrder = jest.fn().mockReturnValue({ range: mockRange });
+  const mockSelect = jest.fn().mockReturnValue({ order: mockOrder });
+  mockSupabase.from.mockReturnValue({ select: mockSelect } as any);
+  return { mockSelect, mockOrder, mockRange };
+}
+
+function mockFromPending() {
+  const mockRange = jest.fn(() => new Promise(() => {}));
+  const mockOrder = jest.fn().mockReturnValue({ range: mockRange });
+  const mockSelect = jest.fn().mockReturnValue({ order: mockOrder });
+  mockSupabase.from.mockReturnValue({ select: mockSelect } as any);
+}
+
 function renderWithRouter() {
   return render(
     <MemoryRouter>
@@ -42,11 +57,7 @@ beforeEach(() => {
 
 describe("PracticeList", () => {
   it("読み込み中にスケルトンを表示する", () => {
-    mockSupabase.from.mockReturnValue({
-      select: jest.fn().mockReturnValue({
-        order: jest.fn(() => new Promise(() => {})),
-      }),
-    } as any);
+    mockFromPending();
 
     const { container } = renderWithRouter();
     // スケルトンのカードが表示されている
@@ -55,11 +66,7 @@ describe("PracticeList", () => {
   });
 
   it("記録が空の場合「練習記録がありません」を表示する", async () => {
-    mockSupabase.from.mockReturnValue({
-      select: jest.fn().mockReturnValue({
-        order: jest.fn().mockResolvedValue({ data: [], error: null }),
-      }),
-    } as any);
+    mockFrom({ data: [], error: null });
 
     renderWithRouter();
     await waitFor(() => {
@@ -71,14 +78,7 @@ describe("PracticeList", () => {
   });
 
   it("エラーが発生した場合エラーメッセージを表示する", async () => {
-    mockSupabase.from.mockReturnValue({
-      select: jest.fn().mockReturnValue({
-        order: jest.fn().mockResolvedValue({
-          data: null,
-          error: { message: "DB接続エラー" },
-        }),
-      }),
-    } as any);
+    mockFrom({ data: null, error: { message: "DB接続エラー" } });
 
     renderWithRouter();
     await waitFor(() => {
@@ -88,11 +88,7 @@ describe("PracticeList", () => {
   });
 
   it("練習記録が正しく一覧表示される", async () => {
-    mockSupabase.from.mockReturnValue({
-      select: jest.fn().mockReturnValue({
-        order: jest.fn().mockResolvedValue({ data: mockRecords, error: null }),
-      }),
-    } as any);
+    mockFrom({ data: mockRecords, error: null });
 
     renderWithRouter();
 
@@ -111,9 +107,7 @@ describe("PracticeList", () => {
   });
 
   it("Supabaseのpractice_recordsテーブルを日付降順でfetchする", async () => {
-    const mockOrder = jest.fn().mockResolvedValue({ data: [], error: null });
-    const mockSelect = jest.fn().mockReturnValue({ order: mockOrder });
-    mockSupabase.from.mockReturnValue({ select: mockSelect } as any);
+    const { mockSelect, mockOrder, mockRange } = mockFrom({ data: [], error: null });
 
     renderWithRouter();
 
@@ -121,6 +115,7 @@ describe("PracticeList", () => {
       expect(mockSupabase.from).toHaveBeenCalledWith("practice_records");
       expect(mockSelect).toHaveBeenCalledWith("*");
       expect(mockOrder).toHaveBeenCalledWith("date", { ascending: false });
+      expect(mockRange).toHaveBeenCalledWith(0, 19);
     });
   });
 });

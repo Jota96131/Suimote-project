@@ -3,6 +3,7 @@ import { supabase } from "../supabase";
 import type { PracticeRecord } from "../types";
 
 const PAGE_SIZE = 20;
+const LIST_COLUMNS = "id, date, distance, time, stroke, facility";
 
 export function usePracticeRecords() {
   const [records, setRecords] = useState<PracticeRecord[]>([]);
@@ -14,7 +15,7 @@ export function usePracticeRecords() {
     setLoading(true);
     const { data, error: queryError } = await supabase
       .from("practice_records")
-      .select("*")
+      .select(LIST_COLUMNS)
       .order("date", { ascending: false })
       .range(offset, offset + PAGE_SIZE - 1);
 
@@ -33,34 +34,8 @@ export function usePracticeRecords() {
   }, []);
 
   useEffect(() => {
-    let ignore = false;
-
-    async function load() {
-      setLoading(true);
-      const { data, error: queryError } = await supabase
-        .from("practice_records")
-        .select("*")
-        .order("date", { ascending: false })
-        .range(0, PAGE_SIZE - 1);
-
-      if (ignore) return;
-
-      if (queryError) {
-        setError(queryError.message);
-      } else {
-        const fetched = (data as PracticeRecord[]) ?? [];
-        setHasMore(fetched.length === PAGE_SIZE);
-        setRecords(fetched);
-      }
-      setLoading(false);
-    }
-
-    load();
-
-    return () => {
-      ignore = true;
-    };
-  }, []);
+    fetchRecords(0);
+  }, [fetchRecords]);
 
   const loadMore = useCallback(() => {
     if (!loading && hasMore) {

@@ -34,8 +34,30 @@ export function usePracticeRecords() {
   }, []);
 
   useEffect(() => {
-    fetchRecords(0);
-  }, [fetchRecords]);
+    let ignore = false;
+
+    (async () => {
+      setLoading(true);
+      const { data, error: queryError } = await supabase
+        .from("practice_records")
+        .select(LIST_COLUMNS)
+        .order("date", { ascending: false })
+        .range(0, PAGE_SIZE - 1);
+
+      if (ignore) return;
+
+      if (queryError) {
+        setError(queryError.message);
+      } else {
+        const fetched = (data as PracticeRecord[]) ?? [];
+        setHasMore(fetched.length === PAGE_SIZE);
+        setRecords(fetched);
+      }
+      setLoading(false);
+    })();
+
+    return () => { ignore = true; };
+  }, []);
 
   const loadMore = useCallback(() => {
     if (!loading && hasMore) {

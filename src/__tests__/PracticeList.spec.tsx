@@ -113,7 +113,7 @@ describe("PracticeList", () => {
 
     await waitFor(() => {
       expect(mockSupabase.from).toHaveBeenCalledWith("practice_records");
-      expect(mockSelect).toHaveBeenCalledWith("*");
+      expect(mockSelect).toHaveBeenCalledWith("id, date, distance, time, stroke, facility");
       expect(mockOrder).toHaveBeenCalledWith("date", { ascending: false });
       expect(mockRange).toHaveBeenCalledWith(0, 19);
     });

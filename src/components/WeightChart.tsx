@@ -59,7 +59,7 @@ export default function WeightChart({ records }: Props) {
               color: "#F0F0F0",
               fontSize: 13,
             }}
-            formatter={(value: number) => [`${value} kg`, "体重"]}
+            formatter={(value) => [`${value ?? 0} kg`, "体重"]}
           />
           <Line
             type="monotone"

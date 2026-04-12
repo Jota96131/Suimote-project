@@ -55,7 +55,7 @@ export default function MonthlyChart() {
               color: "#F0F0F0",
               fontSize: 13,
             }}
-            formatter={(value: number) => [`${value} 日`, "練習日数"]}
+            formatter={(value) => [`${value ?? 0} 日`, "練習日数"]}
           />
           <Bar
             dataKey="days"

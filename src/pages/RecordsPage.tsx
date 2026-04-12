@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Plus } from "lucide-react";
 import PracticeList from "../components/PracticeList";
+import MonthlyChart from "../components/MonthlyChart";
 
 export default function RecordsPage() {
   return (
@@ -14,6 +15,9 @@ export default function RecordsPage() {
           <Plus className="h-4 w-4" />
           追加
         </Link>
+      </div>
+      <div className="mt-4">
+        <MonthlyChart />
       </div>
       <div className="mt-4">
         <PracticeList />

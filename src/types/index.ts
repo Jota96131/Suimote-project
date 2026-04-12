@@ -40,6 +40,21 @@ export type MyStats = {
   total_count: number;     // 累計回数
 };
 
+/** weight_records テーブルに対応する型 */
+export type WeightRecord = {
+  id: string;
+  user_id: string;
+  date: string;           // YYYY-MM-DD
+  weight: number;         // 体重 (kg)
+  created_at: string;
+};
+
+/** 月別練習日数の型 */
+export type MonthlyHistory = {
+  month: string;  // YYYY-MM
+  days: number;   // その月のユニーク練習日数
+};
+
 /** likes テーブルに対応する型 */
 export type Like = {
   id: string;

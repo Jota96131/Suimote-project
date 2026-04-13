@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { Trash2 } from "lucide-react";
+import { Trash2, Pencil } from "lucide-react";
 import { useWeightRecords } from "../hooks/useWeightRecords";
 import WeightChart from "../components/WeightChart";
 import CalendarModal from "../components/CalendarModal";
 import { Calendar } from "lucide-react";
+import type { WeightRecord } from "../types";
 
 const inputClass =
   "rounded-xl border border-[#1E2640] bg-[#0A0E1A] px-4 py-3 text-sm text-[#F0F0F0] placeholder-[#8892A8] outline-none focus:border-[#00D4FF] transition";
@@ -16,6 +17,20 @@ export default function WeightPage() {
   const [weight, setWeight] = useState("");
   const [saving, setSaving] = useState(false);
   const [calendarOpen, setCalendarOpen] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+
+  function handleEdit(record: WeightRecord) {
+    setDate(record.date);
+    setWeight(String(record.weight));
+    setEditingId(record.id);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function handleCancelEdit() {
+    setDate(today());
+    setWeight("");
+    setEditingId(null);
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -25,6 +40,7 @@ export default function WeightPage() {
     if (ok) {
       setWeight("");
       setDate(today());
+      setEditingId(null);
     }
     setSaving(false);
   }
@@ -33,6 +49,7 @@ export default function WeightPage() {
     const ok = window.confirm("この記録を削除しますか？");
     if (!ok) return;
     await deleteWeight(id);
+    if (editingId === id) handleCancelEdit();
   }
 
   return (
@@ -83,8 +100,17 @@ export default function WeightPage() {
           disabled={saving}
           className="rounded-xl bg-gradient-to-r from-[#7B61FF] to-[#00D4FF] px-4 py-3 text-sm font-bold text-[#0A0E1A] transition hover:opacity-90 disabled:opacity-50"
         >
-          {saving ? "保存中..." : "記録する"}
+          {saving ? "保存中..." : editingId ? "更新する" : "記録する"}
         </button>
+        {editingId && (
+          <button
+            type="button"
+            onClick={handleCancelEdit}
+            className="rounded-xl border border-[#1E2640] px-4 py-3 text-sm text-[#8892A8] transition hover:border-[#8892A8]"
+          >
+            キャンセル
+          </button>
+        )}
       </form>
 
       {error && (
@@ -112,13 +138,24 @@ export default function WeightPage() {
             {records.map((r) => (
               <div
                 key={r.id}
-                className="flex items-center justify-between rounded-xl border border-[#1E2640] bg-[#131829] px-4 py-3"
+                className={`flex items-center justify-between rounded-xl border px-4 py-3 ${
+                  editingId === r.id
+                    ? "border-[#00D4FF]/50 bg-[#00D4FF]/5"
+                    : "border-[#1E2640] bg-[#131829]"
+                }`}
               >
                 <div>
                   <p className="text-sm text-[#F0F0F0]">{r.date}</p>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
                   <p className="text-lg font-bold text-[#7B61FF]">{r.weight} kg</p>
+                  <button
+                    onClick={() => handleEdit(r)}
+                    className="rounded-lg p-1.5 text-[#8892A8] transition hover:bg-[#00D4FF]/10 hover:text-[#00D4FF]"
+                    aria-label="編集"
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </button>
                   <button
                     onClick={() => handleDelete(r.id)}
                     className="rounded-lg p-1.5 text-[#8892A8] transition hover:bg-[#FF3B8B]/10 hover:text-[#FF3B8B]"
